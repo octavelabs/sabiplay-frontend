@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Heuvel Grotesk DEMO", "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Helmet Neue", "Inter", "Helvetica Neue", Arial, sans-serif;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@layer utilities {
+  /* The black → grey gradient used on most headings in the design. */
+  .text-gradient-dark {
+    background-image: linear-gradient(180deg, #000000 0%, #5d5d5d 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
