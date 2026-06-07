@@ -12,7 +12,7 @@ const rows = [
 
 function LeaderboardOverlay() {
   return (
-    <div className="absolute right-[27px] top-[34px] flex w-[292px] flex-col gap-7 rounded-[31px] border-[1.5px] border-white bg-black/15 px-[26px] py-[30px] backdrop-blur-md">
+    <div className="absolute left-[56px] top-[86px] flex w-[292px] flex-col gap-7 rounded-[31px] border-[1.5px] border-white bg-[#00000026] px-[26px] py-[30px] backdrop-blur-sm">
       <div className="flex items-center justify-between">
         <span className="font-display text-[16px] font-semibold leading-[19px] text-white">
           Leaderboard

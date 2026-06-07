@@ -6,7 +6,11 @@ const navItems = ["How it works", "Competitions", "Leaderboard", "Campus"];
 export function Header() {
   return (
     <header className="absolute left-1/2 top-[29px] z-30 flex w-[1319px] -translate-x-1/2 items-center justify-between">
-      <Logo />
+      <img
+          src="/images/sabiplayLogo.png"
+          alt="SabiPlay"
+          className="h-[43px] w-[169px]"
+        />
 
       <nav className="flex items-center gap-[18px]">
         {navItems.map((item) => (

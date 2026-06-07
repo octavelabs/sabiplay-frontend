@@ -17,11 +17,15 @@ export function Button({
   variant = "dark",
   className = "",
   size = "md",
+  type = "button",
+  onClick,
 }: {
   children: ReactNode;
   variant?: Variant;
   className?: string;
   size?: "xs" | "sm" | "md";
+  type?: "button" | "submit";
+  onClick?: () => void;
 }) {
   const pad =
     size === "xs"
@@ -31,7 +35,8 @@ export function Button({
         : "px-6 py-[15px] text-[22px]";
   return (
     <button
-      type="button"
+      type={type}
+      onClick={onClick}
       className={`inline-flex items-center justify-center gap-2.5 whitespace-nowrap rounded-pill font-display font-semibold leading-tight transition-transform duration-150 hover:scale-[1.02] active:scale-95 ${pad} ${variants[variant]} ${className}`}
     >
       {children}

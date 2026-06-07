@@ -1,5 +1,3 @@
-import { Avatar } from "../Avatar";
-
 function StatBox({
   value,
   label,
@@ -23,14 +21,15 @@ function StatBox({
   );
 }
 
-const avatars = [
-  { rot: "rotate-[-6deg]", cell: 0 },
-  { rot: "rotate-[3deg]", cell: 2 },
-  { rot: "rotate-[-3deg]", cell: 3 },
-  { rot: "rotate-[5deg]", cell: 5 },
-];
 
 export function Stats() {
+
+  const imgs = [
+    { src: '/images/stat1.svg', height: 81 },
+    { src: '/images/stat2.svg', height: 87 },
+    { src: '/images/stat3.svg', height: 95 },
+    { src: '/images/stat4.svg', height: 89 },
+  ]
   return (
     <section className="relative mx-auto h-[710px] w-[1440px] bg-cream">
       {/* heading */}
@@ -59,15 +58,16 @@ export function Stats() {
       {/* avatar stack + caption */}
       <div className="absolute left-[686px] top-[548px] flex items-center gap-3">
         <div className="flex items-center">
-          {avatars.map((a, i) => (
-            <Avatar
+          {imgs.map((img, i) => (
+            <div
               key={i}
-              cell={a.cell}
-              rounded="rounded-full"
-              className={`h-[87px] w-[78px] border-2 border-white ${a.rot} ${
-                i > 0 ? "-ml-[39px]" : ""
+              style={{ zIndex: i, width: 79, height: img.height }}
+              className={`relative overflow-hidden rounded-full border-2 border-white bg-stone/20 ${
+                i > 0 ? "-ml-[40px]" : ""
               }`}
-            />
+            >
+              <img src={img.src} alt="" className="h-full w-full object-cover" />
+            </div>
           ))}
         </div>
         <span className="text-gradient-dark font-body text-[36px] font-normal leading-[32px]">

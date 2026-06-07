@@ -25,7 +25,11 @@ export function Footer() {
 
       {/* top row: logo + nav */}
       <div className="absolute left-[56px] top-[56px] flex w-[1321px] items-center justify-between">
-        <Logo />
+        <img
+          src="/images/sabiplayLogo.png"
+          alt="SabiPlay"
+          className="h-[43px] w-[169px]"
+        />
         <nav className="flex items-center gap-10">
           {links.map((l) => (
             <a

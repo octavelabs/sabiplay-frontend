@@ -4,9 +4,15 @@ import { tiers, TierRow } from "../CompetitionTier";
 
 export function Competitions() {
   return (
-    <section className="relative mx-auto h-[928px] w-[1440px] bg-cream">
+    <section
+      className="relative mx-auto h-[928px] w-[1440px] bg-cream bg-[center_top_30%]"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(255,254,251,0.3), rgba(255,254,251,0.7)), url('/images/section-bg.png')",
+      }}
+    >
       {/* gold cup card */}
-      <div className="absolute left-[52px] top-[215px] flex w-[571px] flex-col gap-[15px] rounded-[48px] bg-[#fef8e9] px-[42px] py-12">
+      {/* <div className="absolute left-[52px] top-[215px] flex w-[571px] flex-col gap-[15px] rounded-[48px] bg-[#fef8e9] px-[42px] py-12">
         <div className="flex items-center justify-between">
           <span className="font-display text-[22px] font-semibold leading-[27px] text-black/70">
             Gold Cup
@@ -20,7 +26,10 @@ export function Competitions() {
             <TierRow key={t.badge} tier={t} />
           ))}
         </div>
-      </div>
+      </div> */}
+      <img src='/images/competitonImage.svg' className="w-[571px] h-[518px] absolute left-[52px] top-[215px]" />
+        
+   
 
       {/* right copy */}
       <div className="absolute left-[743px] top-[156px] flex w-[584px] flex-col gap-[45px]">
