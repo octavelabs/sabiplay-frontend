@@ -1,8 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useSetPageHeader } from "../../context/PageHeaderContext";
+import { Modal } from "../../components/Modal";
 import { UsersIcon, ClockIcon, ChevronRightIcon, TrophyIcon } from "../home/icons";
+
+/** Turn a competition title into a URL slug for the detail route. */
+const slugify = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 /* ------------------------------------------------------------------ */
 /*  Filter tabs                                                       */
@@ -17,8 +23,13 @@ const TABS = [
   { label: "Battles" },
 ];
 
-function Tabs() {
-  const [active, setActive] = useState("All");
+function Tabs({
+  active,
+  onChange,
+}: {
+  active: string;
+  onChange: (label: string) => void;
+}) {
   return (
     <div className="flex flex-wrap gap-3.5">
       {TABS.map((t) => {
@@ -26,7 +37,7 @@ function Tabs() {
         return (
           <button
             key={t.label}
-            onClick={() => setActive(t.label)}
+            onClick={() => onChange(t.label)}
             className={`flex items-center gap-2 rounded-full px-3 py-2 font-display text-[16px] font-medium leading-none transition-colors ${
               on
                 ? "border border-gold-deep/[0.53] bg-gold text-[#615e53]"
@@ -42,6 +53,20 @@ function Tabs() {
           </button>
         );
       })}
+    </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="flex flex-col items-center justify-center gap-3 rounded-[20px] bg-[#F8F8F5] px-6 py-14 text-center">
+      <img src='/images/trophy.svg' className="w-[81px] h-[81px]"/>
+      <p className="font-display text-[16px] font-normal text-black/45">
+        Check back soon — new ones open daily
+      </p>
+      <h3 className="font-display text-[24px] font-bold leading-7 text-black/80">
+        No competitions here
+      </h3>
     </div>
   );
 }
@@ -90,7 +115,7 @@ const joined: Joined[] = [
   },
 ];
 
-function JoinedCard({ c }: { c: Joined }) {
+function JoinedCard({ c, onView }: { c: Joined; onView: () => void }) {
   return (
     <div className={`flex flex-col gap-[15px] rounded-[20px] border px-6 py-5 ${c.border} ${c.cardBg}`}>
       <div className="flex flex-col gap-1">
@@ -120,7 +145,10 @@ function JoinedCard({ c }: { c: Joined }) {
           <div className={`h-full rounded-full bg-gradient-to-r ${c.bar}`} style={{ width: `${c.pct}%` }} />
         </div>
       </div>
-      <button className={`flex items-center justify-center gap-2 rounded-full border py-2 font-display text-[16px] font-semibold text-white ${c.btn}`}>
+      <button
+        onClick={onView}
+        className={`flex items-center justify-center gap-2 rounded-full border py-2 font-display text-[16px] font-semibold text-white ${c.btn}`}
+      >
         View Competition
         <ChevronRightIcon className="h-3.5 w-3.5" />
       </button>
@@ -165,7 +193,7 @@ const games: Game[] = [
   },
 ];
 
-function GameCard({ c }: { c: Game }) {
+function GameCard({ c, onJoin }: { c: Game; onJoin: () => void }) {
   return (
     <div className={`flex flex-col gap-3 rounded-[20px] border p-5 ${c.border} ${c.cardBg}`}>
       <div className="flex items-center justify-between">
@@ -199,10 +227,65 @@ function GameCard({ c }: { c: Game }) {
       <div className="h-[11px] w-full overflow-hidden rounded-full bg-[#f1f1ef]">
         <div className={`h-full rounded-full bg-gradient-to-r ${c.bar}`} style={{ width: `${c.pct}%` }} />
       </div>
-      <button className={`mt-1 rounded-full border py-2 font-display text-[16px] font-semibold ${c.btn}`}>
+      <button
+        onClick={onJoin}
+        className={`mt-1 rounded-full border py-2 font-display text-[16px] font-semibold ${c.btn}`}
+      >
         Join Competition
       </button>
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Join confirmation modal                                           */
+/* ------------------------------------------------------------------ */
+function JoinModal({
+  game,
+  onConfirm,
+  onClose,
+}: {
+  game: Game;
+  onConfirm: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <Modal onClose={onClose}>
+      <div className="flex flex-col gap-8 px-8 py-7">
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-start justify-between gap-5">
+            <div className="flex flex-col gap-[3px]">
+              <span className="font-display text-[16px] font-bold leading-[23px] text-black/80">
+                Join {game.title}?
+              </span>
+              <span className="font-display text-[14px] font-normal text-black/70">
+                Entry fee will be deducted from your wallet
+              </span>
+            </div>
+            <button onClick={onClose} aria-label="Close" className="mt-1 text-black">
+              <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round">
+                <path d="M6 6l12 12M18 6 6 18" />
+              </svg>
+            </button>
+          </div>
+          <span className="font-display text-[32px] font-bold text-[#dba409]">{game.prize}</span>
+        </div>
+        <div className="flex gap-2.5">
+          <button
+            onClick={onClose}
+            className="flex-1 rounded-full bg-gold/[0.14] px-6 py-2 font-display text-[16px] font-semibold text-gold-deep"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="flex-1 rounded-full border border-gold-deep bg-gold px-6 py-2 font-display text-[16px] font-semibold text-ink/70"
+          >
+            Pay &amp; Join
+          </button>
+        </div>
+      </div>
+    </Modal>
   );
 }
 
@@ -215,27 +298,62 @@ export default function ComputePage() {
     subtitle: "Choose your competition and play to win",
   });
 
+  const router = useRouter();
+  const [active, setActive] = useState("All");
+  const [joinGame, setJoinGame] = useState<Game | null>(null);
+
+  // Pre-open a join confirmation via ?join=<slug> (deep-link / preview).
+  useEffect(() => {
+    const j = new URLSearchParams(window.location.search).get("join");
+    if (j) {
+      const g = games.find((g) => slugify(g.title) === j);
+      if (g) setJoinGame(g);
+    }
+  }, []);
+
+  // TODO: drive from the endpoint response once tab filtering is wired up.
+  // For now, simulate an empty result on the "Battles" tab.
+  const hasCompetitions = active !== "Battles";
+
   return (
     <div className="mx-auto flex w-full max-w-[990px] flex-col gap-7">
-      <Tabs />
+      <Tabs active={active} onChange={setActive} />
 
-      <section className="flex flex-col gap-4">
-        <SectionTitle>Games you joined</SectionTitle>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {joined.map((c, i) => (
-            <JoinedCard key={i} c={c} />
-          ))}
-        </div>
-      </section>
+      {hasCompetitions ? (
+        <>
+          <section className="flex flex-col gap-4">
+            <SectionTitle>Games you joined</SectionTitle>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {joined.map((c, i) => (
+                <JoinedCard
+                  key={i}
+                  c={c}
+                  onView={() => router.push(`/dashboard/compete/${slugify(c.title)}`)}
+                />
+              ))}
+            </div>
+          </section>
 
-      <section className="flex flex-col gap-4">
-        <SectionTitle>Other Games</SectionTitle>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {games.map((c) => (
-            <GameCard key={c.title} c={c} />
-          ))}
-        </div>
-      </section>
+          <section className="flex flex-col gap-4">
+            <SectionTitle>Other Games</SectionTitle>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {games.map((c) => (
+                <GameCard key={c.title} c={c} onJoin={() => setJoinGame(c)} />
+              ))}
+            </div>
+          </section>
+        </>
+      ) : (
+        <EmptyState />
+      )}
+
+      {joinGame && (
+        <JoinModal
+          game={joinGame}
+          onClose={() => setJoinGame(null)}
+          onConfirm={() => router.push(`/dashboard/compete/${slugify(joinGame.title)}`)}
+        />
+      )}
     </div>
   );
 }

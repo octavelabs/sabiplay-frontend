@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 
-type Header = { title?: ReactNode; subtitle?: ReactNode };
+type Header = { title?: ReactNode; subtitle?: ReactNode; node?: ReactNode };
 
 const PageHeaderContext = createContext<{
   header: Header;
@@ -31,9 +31,9 @@ export function usePageHeader() {
 /** Set the shared dashboard header for the current page (clears on unmount). */
 export function useSetPageHeader(header: Header) {
   const { setHeader } = usePageHeader();
-  const { title, subtitle } = header;
+  const { title, subtitle, node } = header;
   useEffect(() => {
-    setHeader({ title, subtitle });
+    setHeader({ title, subtitle, node });
     return () => setHeader({});
-  }, [title, subtitle, setHeader]);
+  }, [title, subtitle, node, setHeader]);
 }
