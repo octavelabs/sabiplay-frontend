@@ -228,7 +228,7 @@ function WithdrawModal({ onAddBank, onClose }: { onAddBank: () => void; onClose:
             <div className="flex flex-col gap-[9px]">
               <span className="font-display text-[22px] font-semibold text-ink">No Bank Account</span>
               <span className="font-display text-[14px] font-normal text-ink/60">
-                Add a bank account to withdraw your funds
+                Add your bank account to withdraw your funds
               </span>
             </div>
           </div>
