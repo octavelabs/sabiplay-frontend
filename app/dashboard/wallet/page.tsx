@@ -417,7 +417,7 @@ export default function WalletPage() {
   }, []);
 
   return (
-    <div className="mx-auto flex w-full max-w-[990px] flex-col gap-9">
+    <div className="mx-auto flex w-full  flex-col gap-9">
       {/* balance + stats */}
       <div className="flex flex-col gap-4 lg:flex-row">
         <WalletCard onFund={() => setModal("fund")} onWithdraw={() => setModal("withdraw")} />

@@ -107,11 +107,11 @@ type Joined = {
 const joined: Joined[] = [
   {
     tier: "Sapphire Tier", title: "Daily Grind Mini Cup", prize: "₦5,000", players: "3/20 players", pct: 50,
-    color: "#0f7bba", cardBg: "bg-[#0f7bba]/[0.06]", border: "border-[#0f52ba]/25", bar: "from-[#6490d5] to-[#0f7bba]", btn: "bg-[#0f7bba] border-[#066182]",
+    color: "#0f7bba", cardBg: "bg-[url('/images/sapphire.png')] bg-cover bg-center", border: "border-[#0f52ba]/25", bar: "from-[#6490d5] to-[#0f7bba]", btn: "bg-[#0f7bba] border-[#066182]",
   },
   {
-    tier: "Sapphire Tier", title: "Daily Grind Mini Cup", prize: "₦10,000", players: "3/20 players", pct: 50,
-    color: "#d9961b", cardBg: "bg-gold/[0.08]", border: "border-gold/25", bar: "from-[#ffdf83] to-[#fcc11a]", btn: "bg-[#d9961b] border-[#b47445]",
+    tier: "Bronze Tier", title: "Daily Grind Mini Cup", prize: "₦10,000", players: "3/20 players", pct: 50,
+    color: "#d9961b", cardBg: "bg-[url('/images/gold.png')] bg-cover bg-center", border: "border-gold/25", bar: "from-[#ffdf83] to-[#fcc11a]", btn: "bg-[#d9961b] border-[#b47445]",
   },
 ];
 
@@ -177,19 +177,19 @@ type Game = {
 const games: Game[] = [
   {
     tier: "Silver Tier · cup", title: "Sports Champions Cup", prize: "₦20,000", entry: "₦2,000", players: "19/50 players", pct: 24,
-    prizeColor: "#1e1e1e", cardBg: "bg-[#d6d6d6]/[0.15]", border: "border-stone/20", prizeBox: "bg-white/60 border-stone/35", bar: "from-[#bbb8b6] to-[#999999]", btn: "bg-[#97918b] text-white border-black/40",
+    prizeColor: "#1e1e1e", cardBg: "", border: "bg-[url('/images/silver.png')] bg-cover bg-center", prizeBox: "bg-white/60 border-stone/35", bar: "from-[#bbb8b6] to-[#999999]", btn: "bg-[#97918b] text-white border-black/40",
   },
   {
     tier: "Gold Tier · league", title: "Nigeria Premier League Quiz", prize: "₦50,000", entry: "₦5,000", players: "6/100 players", pct: 50,
-    prizeColor: "#cf9b09", cardBg: "bg-gold/[0.08]", border: "border-gold/25", prizeBox: "bg-[#fff6de] border-gold/40", bar: "from-[#ffdf83] to-[#fcc11a]", btn: "bg-gold text-ink/70 border-gold-deep",
+    prizeColor: "#cf9b09", cardBg: "bg-[url('/images/gold.png')] bg-cover bg-center", border: "border-gold/25", prizeBox: "bg-[#fff6de] border-gold/40", bar: "from-[#ffdf83] to-[#fcc11a]", btn: "bg-gold text-ink/70 border-gold-deep",
   },
   {
     tier: "Bronze Tier · daily", title: "Test World Cup", prize: "₦57,600", entry: "₦500", players: "0/200 players", pct: 0,
-    prizeColor: "#d9961b", cardBg: "bg-[#d9961b]/[0.05]", border: "border-[#d9961b]/25", prizeBox: "bg-[#d9961b]/[0.07] border-[#d9961b]/40", bar: "from-[#f0bb5a] to-[#d9961b]", btn: "bg-[#d9961b] text-white border-[#b47445]",
+    prizeColor: "#d9961b", cardBg: "bg-[url('/images/bronze.png')] bg-cover bg-center", border: "border-[#d9961b]/25", prizeBox: "bg-[#d9961b]/[0.07] border-[#d9961b]/40", bar: "from-[#f0bb5a] to-[#d9961b]", btn: "bg-[#d9961b] text-white border-[#b47445]",
   },
   {
     tier: "Diamond Tier · league", title: "Diamond League Season 1", prize: "₦100,000", entry: "₦5,000", players: "6/100 players", pct: 50,
-    prizeColor: "#0e9f37", cardBg: "bg-win/[0.05]", border: "border-win/25", prizeBox: "bg-win/[0.07] border-win/40", bar: "from-[#6bd789] to-[#0e9f37]", btn: "bg-win text-white border-[#157831]",
+    prizeColor: "#0e9f37", cardBg: "bg-[url('/images/diamond.png')] bg-cover bg-center", border: "border-win/25", prizeBox: "bg-win/[0.07] border-win/40", bar: "from-[#6bd789] to-[#0e9f37]", btn: "bg-win text-white border-[#157831]",
   },
 ];
 
@@ -316,7 +316,7 @@ export default function ComputePage() {
   const hasCompetitions = active !== "Battles";
 
   return (
-    <div className="mx-auto flex w-full max-w-[990px] flex-col gap-7">
+    <div className="mx-auto flex w-full flex-col gap-7">
       <Tabs active={active} onChange={setActive} />
 
       {hasCompetitions ? (

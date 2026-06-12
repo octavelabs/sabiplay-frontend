@@ -7,6 +7,7 @@ import { BellIcon } from "../sidebar/icons";
 /** Renders the dashboard header using the title/subtitle/node the active page set. */
 export function DashboardHeaderSlot() {
   const { header } = usePageHeader();
+  if (header.hidden) return null;
   return (
     <DashboardHeader title={header.title} subtitle={header.subtitle} node={header.node} />
   );
@@ -28,7 +29,7 @@ export default function DashboardHeader({
   const firstName = user.name.split(" ")[0];
 
   return (
-    <header className="flex items-center justify-between px-4 pt-6 lg:px-[35px] lg:pt-[40px] xl:px-[70px]">
+    <header className="flex items-center justify-between px-4 pt-6 lg:px-[35px] lg:pt-[40px] xl:px-[57px]">
       {node ?? (
         <>
           {/* mobile logo */}

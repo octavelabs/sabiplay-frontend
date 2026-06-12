@@ -160,33 +160,34 @@ type Tier = {
   prizeBox: string;
   bar: string;
   btn: string;
+  bg: string
 };
 const competitions: Tier[] = [
   {
     tier: "Gold Tier · league", title: "Nigeria Premier League Quiz", prize: "₦50,000", entry: "₦5,000",
     players: "6/100 players", pct: 50, prizeColor: "#cf9b09",
-    header: "from-[#fff3d6] to-white", border: "border-gold/25",
+    header: "from-[#fff3d6] to-white", border: "border-gold/25", bg: "bg-[url('/images/gold.png')] bg-cover bg-center",
     prizeBox: "bg-[#fff6de] border-gold/40", bar: "from-[#ffdf83] to-[#fcc11a]",
     btn: "bg-gold text-ink/70 border-gold-deep",
   },
   {
     tier: "Silver Tier · cup", title: "Sports Champions Cup", prize: "₦20,000", entry: "₦2,000",
     players: "19/50 players", pct: 24, prizeColor: "#1e1e1e",
-    header: "from-[#ededeb] to-white", border: "border-stone/25",
+    header: "from-[#ededeb] to-white", border: "border-stone/25", bg: "bg-[url('/images/silver.png')] bg-cover bg-center",
     prizeBox: "bg-white/70 border-stone/40", bar: "from-[#bbb8b6] to-[#999999]",
     btn: "bg-[#97918b] text-white border-black/40",
   },
   {
     tier: "Sapphire Tier · mini cup", title: "Daily Grind Mini Cup", prize: "₦5,000", entry: "₦500",
     players: "0/30 players", pct: 0, prizeColor: "#0f8cba",
-    header: "from-[#e3f1f8] to-white", border: "border-[#0f52ba]/20",
+    header: "from-[#e3f1f8] to-white", border: "border-[#0f52ba]/20", bg: "bg-[url('/images/sapphire.png')] bg-cover bg-center",
     prizeBox: "bg-[#0f7bba]/[0.07] border-[#0f52ba]/40", bar: "from-[#6490d5] to-[#0f7bba]",
     btn: "bg-[#0f7bba] text-white border-[#066182]",
   },
   {
     tier: "Bronze Tier · daily", title: "Beat the Time Challenge", prize: "₦10,000", entry: "₦500",
     players: "0/200 players", pct: 0, prizeColor: "#d9961b",
-    header: "from-[#fdf3e1] to-white", border: "border-[#d9961b]/25",
+    header: "from-[#fdf3e1] to-white", border: "border-[#d9961b]/25", bg: "bg-[url('/images/bronze.png')] bg-cover bg-center",
     prizeBox: "bg-[#d9961b]/[0.07] border-[#d9961b]/40", bar: "from-[#f0bb5a] to-[#d9961b]",
     btn: "bg-[#d9961b] text-white border-[#b47445]",
   },
@@ -194,10 +195,10 @@ const competitions: Tier[] = [
 
 function CompetitionCard({ c }: { c: Tier }) {
   return (
-    <div className={`flex flex-1 flex-col overflow-hidden rounded-[20px] border bg-white ${c.border}`}>
-      <div className={`flex flex-col gap-3 bg-gradient-to-b p-[15px] ${c.header}`}>
-        <div className="flex items-center justify-between">
-          <span className="font-display text-[12px] font-medium uppercase tracking-wide text-black/60">
+    <div className={`flex flex-1 flex-col overflow-hidden rounded-[20px] bg-white border ${c.border}`}>
+      <div className={`flex flex-col   ${c.header}`}>
+        <div className={`flex items-center justify-between  p-[15px] pt-[80px] ${c.bg} border-b`}>
+          <span className={`font-display text-[12px] font-medium uppercase rounded-full tracking-wide text-black/60 py-[2px] px-[10px] ${c.btn}`}>
             {c.tier}
           </span>
           <span className="flex items-center gap-1 font-display text-[12px] font-semibold text-black/60">
@@ -205,8 +206,8 @@ function CompetitionCard({ c }: { c: Tier }) {
             Started
           </span>
         </div>
-        <h3 className="font-display text-[14px] font-bold leading-[17px] text-black/80">{c.title}</h3>
-        <div className={`flex flex-col gap-0.5 rounded-[12px] border p-3 ${c.prizeBox}`}>
+        <h3 className="font-display text-[14px] font-bold leading-[17px] text-black/80 mx-[15px] py-[11px]">{c.title}</h3>
+        <div className={`flex flex-col gap-0.5 rounded-[12px] border mx-[15px] mb-[27px] p-3 ${c.prizeBox}`}>
           <span className="font-display text-[12px] font-normal text-black/60">Prize Pool</span>
           <div className="flex items-end justify-between">
             <span className="font-display text-[16px] font-bold leading-5" style={{ color: c.prizeColor }}>
@@ -217,7 +218,7 @@ function CompetitionCard({ c }: { c: Tier }) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-2.5 px-[15px] pb-[15px]">
+      <div className={`flex flex-col gap-2.5 px-[15px] pb-[15px]`}>
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-1 font-display text-[10px] font-semibold text-black/60">
@@ -395,7 +396,7 @@ function QuickPlayRow() {
 /* ------------------------------------------------------------------ */
 export default function DashboardHome() {
   return (
-    <div className="mx-auto flex w-full max-w-[990px] flex-col gap-6">
+    <div className="mx-auto flex w-full  flex-col gap-6">
       {/* wallet + stats */}
       <div className="flex flex-col gap-2.5 sm:flex-row">
         <WalletCard />
