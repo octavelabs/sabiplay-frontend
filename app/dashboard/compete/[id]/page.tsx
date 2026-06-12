@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSetPageHeader } from "../../../context/PageHeaderContext";
+import { useSetLayoutOptions } from "../../../context/LayoutOptionsContext";
 import { Button } from "@/components/Button";
 import { VoucherIcon, UsersIcon, ClockIcon, TrophyIcon } from "../../home/icons";
 
@@ -360,10 +361,12 @@ export default function CompetitionDetailPage() {
     ),
     [router],
   );
+  
   useSetPageHeader({ node: headerNode });
+  useSetLayoutOptions({ hideBg: true });
 
   return (
-    <div className="mx-auto flex w-full max-w-[990px] flex-col gap-7">
+    <div className="mx-auto flex w-full flex-col gap-7">
       <Hero />
       <TabBar active={tab} onChange={setTab} />
       {tab === "Overview" && <Overview />}
