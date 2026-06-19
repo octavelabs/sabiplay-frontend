@@ -43,11 +43,11 @@ const Tick = () => (
 /* ------------------------------------------------------------------ */
 function Hero() {
   return (
-    <div className="relative overflow-hidden rounded-[22px] border border-[#0f7bba]/[0.16] bg-[#f3f1eb]">
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-90"
-        style={{ backgroundImage: "url(/images/comp-sapphire.png)" }}
-      />
+    <div className="relative overflow-hidden rounded-[22px] border border-[#0f7bba]/[0.16] bg-[url('/images/sapphire.png')] bg-cover bg-center">
+      {/* <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url(/images/sapphire.png)" }}
+      /> */}
       <div className="absolute inset-x-0 top-0 h-[120px] bg-white/80" />
       <div className="relative flex flex-col gap-[11px] p-7">
         <div className="flex flex-col gap-2">
@@ -361,7 +361,7 @@ export default function CompetitionDetailPage() {
     ),
     [router],
   );
-  
+
   useSetPageHeader({ node: headerNode });
   useSetLayoutOptions({ hideBg: true });
 

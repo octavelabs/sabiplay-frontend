@@ -2,14 +2,19 @@
 
 import { useUser } from "../../context/UserContext";
 import { usePageHeader } from "../../context/PageHeaderContext";
-import { BellIcon } from "../sidebar/icons";
 
 /** Renders the dashboard header using the title/subtitle/node the active page set. */
 export function DashboardHeaderSlot() {
   const { header } = usePageHeader();
   if (header.hidden) return null;
   return (
-    <DashboardHeader title={header.title} subtitle={header.subtitle} node={header.node} />
+    <DashboardHeader
+      title={header.title}
+      subtitle={header.subtitle}
+      node={header.node}
+      button={header.button}
+      onButtonClick={header.onButtonClick}
+    />
   );
 }
 
@@ -18,12 +23,16 @@ interface DashboardHeaderProps {
   subtitle?: React.ReactNode;
   /** Fully custom left-side header content (replaces logo + title block). */
   node?: React.ReactNode;
+  button?: React.ReactNode;
+  onButtonClick?: () => void;
 }
 
 export default function DashboardHeader({
   title,
   subtitle,
   node,
+  button,
+  onButtonClick,
 }: DashboardHeaderProps) {
   const user = useUser();
   const firstName = user.name.split(" ")[0];
@@ -33,7 +42,7 @@ export default function DashboardHeader({
       {node ?? (
         <>
           {/* mobile logo */}
-          <span
+          {/* <span
             aria-label="SabiPlay"
             className="block h-8 w-[150px] shrink-0 bg-ink lg:hidden"
             style={{
@@ -44,26 +53,29 @@ export default function DashboardHeader({
               WebkitMaskRepeat: "no-repeat",
               maskRepeat: "no-repeat",
             }}
-          />
+          /> */}
 
-          <div className="hidden flex-col gap-3.5 lg:flex">
-            <h1 className="font-display text-[40px] font-semibold leading-[43px] text-ink xl:text-[48px]">
+          <div className="flex-col gap-3.5 lg:flex">
+            <h1 className="font-display text-[22px] lg:text-[40px] font-semibold leading-[43px] text-[#1E1E1E] xl:text-[48px]">
               {title ?? <>Hey, {firstName} 👋</>}
             </h1>
-            <p className="font-display text-[18px] font-medium leading-6 text-ink/60">
-              {subtitle ?? "Ready to compete? Your next match is waiting"}
-            </p>
+            {subtitle !== "" && (
+              <p className="font-display text-[14px] lg:text-[18px] font-medium leading-6 text-[#1E1E1E99]">
+                {subtitle ?? "Ready to compete? Your next match is waiting"}
+              </p>
+            )}
           </div>
         </>
       )}
 
-      <button
-        aria-label="Notifications"
-        className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gold/[0.07]"
-      >
-        <BellIcon className="h-[26px] w-[26px] text-ink-900" />
-        <span className="absolute right-1.5 top-1.5 h-3 w-3 rounded-full border-2 border-[#fffaeb] bg-[#f44336]" />
-      </button>
+      {button && (
+        <button
+          onClick={onButtonClick}
+          className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gold/[0.07]"
+        >
+          {button}
+        </button>
+      )}
     </header>
   );
 }

@@ -5,7 +5,8 @@ import { tiers, TierRow } from "../CompetitionTier";
 export function Competitions() {
   return (
     <section
-      className="relative mx-auto h-[928px] w-[1440px] bg-cream bg-[center_top_30%]"
+    id='competitions'
+      className="relative mx-auto h-[928px] max-w-[1740px] bg-cream bg-[center_top_30%]"
       style={{
         backgroundImage:
           "linear-gradient(rgba(255,254,251,0.3), rgba(255,254,251,0.7)), url('/images/section-bg.png')",

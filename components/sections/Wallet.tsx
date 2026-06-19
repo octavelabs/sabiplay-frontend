@@ -99,7 +99,7 @@ function ActivityCard() {
 
 export function Wallet() {
   return (
-    <section className="relative mx-auto h-[928px] w-[1440px] bg-ink-900">
+    <section className="relative mx-auto h-[928px] max-w-[1740px] bg-ink-900">
       <div className="absolute left-[59px] top-[155px] flex w-[1322px] items-center justify-between">
         {/* left: wallet + activity */}
         <div className="flex w-[692px] flex-col gap-[23px]">

@@ -34,7 +34,7 @@ function TestimonialCard({ t, className = "" }: { t: Testimonial; className?: st
 
 export function Testimonials() {
   return (
-    <section className="relative mx-auto h-[880px] w-[1440px] bg-sand">
+    <section className="relative mx-auto h-[880px] max-w-[1740px] bg-sand">
       {/* heading */}
       <div className="absolute left-1/2 top-[119px] flex w-[794px] -translate-x-1/2 flex-col items-center gap-[39px]">
         <h2 className="text-gradient-dark text-center font-display text-[62px] font-semibold leading-[56px]">

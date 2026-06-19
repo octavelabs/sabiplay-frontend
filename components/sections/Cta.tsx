@@ -3,7 +3,7 @@ import { Button } from "../Button";
 
 export function Cta() {
   return (
-    <section className="relative mx-auto h-[952px] w-[1440px] overflow-hidden bg-ink-900">
+    <section className="relative mx-auto h-[952px] max-w-[1740px] overflow-hidden bg-ink-900">
       <div className="absolute left-1/2 top-[49px] flex w-[621px] -translate-x-1/2 flex-col items-center gap-[67px]">
         <Image
           src="/images/cta-character.png"

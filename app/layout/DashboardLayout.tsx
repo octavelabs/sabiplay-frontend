@@ -32,7 +32,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
           <DashboardHeaderSlot />
         </div>
 
-        <main className="relative z-10 flex-1 overflow-auto mt-[37px] px-[50px]">
+        <main className="relative z-10 flex-1 overflow-auto mt-[37px] px-[25px] lg:px-[40px] mb-[68px] lg:mb-0">
           {children}
         </main>
       </div>

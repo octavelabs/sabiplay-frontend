@@ -47,7 +47,7 @@ export function Faq() {
   const [openIndex, setOpenIndex] = useState(0);
 
   return (
-    <section className="relative mx-auto h-[1269px] w-[1440px] bg-white">
+    <section className="relative mx-auto h-[1269px] max-w-[1740px] bg-white">
       <div className="absolute left-1/2 top-[110px] flex w-[866px] -translate-x-1/2 flex-col items-center gap-[100px]">
         {/* heading */}
         <div className="flex flex-col items-center gap-[39px]">

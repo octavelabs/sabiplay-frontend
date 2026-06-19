@@ -1,7 +1,7 @@
 import { Logo } from "../Logo";
 import { Button } from "../Button";
 
-const navItems = ["How it works", "Competitions", "Leaderboard", "Campus"];
+const navItems = [{label: "How it works", value: 'how-it-works'}, {label: "Competitions", value: 'competitions'}, {label: "Leaderboard", value: 'leaderboard'}];
 
 export function Header() {
   return (
@@ -15,11 +15,11 @@ export function Header() {
       <nav className="flex items-center gap-[18px]">
         {navItems.map((item) => (
           <a
-            key={item}
-            href="#"
+            key={item.label}
+            href={`#${item.value}`}
             className="font-display text-[18px] font-medium leading-[22px] text-ink/70 transition-colors hover:text-ink"
           >
-            {item}
+            {item.label}
           </a>
         ))}
       </nav>

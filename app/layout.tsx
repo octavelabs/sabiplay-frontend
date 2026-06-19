@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter } from "next/font/google";
+import { Space_Grotesk, Inter,  } from "next/font/google";
 import "./globals.css";
 
-/**
- * The Figma file uses two licensed fonts that aren't publicly distributable:
- *   - Display: "Heuvel Grotesk DEMO"
- *   - Body:    "Helmet Neue"
- * We map them to the closest free equivalents and expose CSS variables so the
- * originals are used automatically if they are ever installed locally.
- */
+
 const display = Space_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
