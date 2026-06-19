@@ -10,7 +10,7 @@ import {
 
 export function Hero() {
   return (
-    <section className="relative mx-auto h-[1125px] w-[1440px] overflow-hidden bg-center"
+    <section className="relative mx-auto h-[1125px] max-w-[1740px] overflow-hidden bg-center"
      style={{
                   
                   backgroundImage: "url('/images/section-bg.png')",

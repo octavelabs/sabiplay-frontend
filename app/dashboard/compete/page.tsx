@@ -31,14 +31,14 @@ function Tabs({
   onChange: (label: string) => void;
 }) {
   return (
-    <div className="flex flex-wrap gap-3.5">
+    <div className="flex max-w-full overflow-auto gap-3.5">
       {TABS.map((t) => {
         const on = active === t.label;
         return (
           <button
             key={t.label}
             onClick={() => onChange(t.label)}
-            className={`flex items-center gap-2 rounded-full px-3 py-2 font-display text-[16px] font-medium leading-none transition-colors ${
+            className={`flex items-center gap-2 rounded-full px-3 py-2 font-display text-[16px] whitespace-nowrap font-medium leading-none transition-colors ${
               on
                 ? "border border-gold-deep/[0.53] bg-gold text-[#615e53]"
                 : "bg-gold/[0.13] text-ink/70 hover:bg-gold/20"
@@ -59,7 +59,7 @@ function Tabs({
 
 function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 rounded-[20px] bg-[#F8F8F5] px-6 py-14 text-center">
+    <div className="flex flex-col items-center justify-center gap-3 rounded-[20px]  px-6 py-14 text-center">
       <img src='/images/trophy.svg' className="w-[81px] h-[81px]"/>
       <p className="font-display text-[16px] font-normal text-black/45">
         Check back soon — new ones open daily

@@ -42,7 +42,7 @@ const config: Config = {
         body: ["var(--font-body)", "Helvetica Neue", "Arial", "sans-serif"],
       },
       maxWidth: {
-        shell: "1440px",
+        shell: "1740px",
       },
       borderRadius: {
         card: "21px",

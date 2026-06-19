@@ -13,7 +13,7 @@ const links = [
 
 export function Footer() {
   return (
-    <section className="relative mx-auto h-[593px] w-[1440px] overflow-hidden bg-white">
+    <section className="relative mx-auto h-[593px] max-w-[1740px] overflow-hidden bg-white">
       {/* background texture */}
       <Image
         src="/images/bg-texture.png"

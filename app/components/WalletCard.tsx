@@ -34,7 +34,7 @@ export function WalletCard({
               <EyeIcon className="h-5 w-5 text-[#342c1c]" />
             </span>
           </div>
-          <span className="font-display text-[48px] font-medium leading-[63px] text-ink">
+          <span className="font-display text-[32px] lg:text-[48px] font-medium leading-[47px] lg:leading-[63px] text-ink">
             {balance}
           </span>
         </div>

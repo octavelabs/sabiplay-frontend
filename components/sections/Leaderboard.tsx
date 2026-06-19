@@ -55,7 +55,7 @@ function LeaderboardOverlay() {
 
 export function Leaderboard() {
   return (
-    <section className="relative mx-auto h-[778px] w-[1440px] bg-white">
+    <section className="relative mx-auto h-[778px] max-w-[1740px] bg-white" id='leaderboard'>
       {/* left copy */}
       <div className="absolute left-[56px] top-[131px] flex w-[584px] flex-col gap-[45px]">
         <div className="flex flex-col gap-[38px]">

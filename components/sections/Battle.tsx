@@ -11,7 +11,7 @@ const bullets = [
 
 export function Battle() {
   return (
-    <section className="relative mx-auto h-[1187px] w-[1440px] overflow-hidden bg-ink-900">
+    <section className="relative mx-auto h-[1187px] max-w-[1740px] overflow-hidden bg-ink-900" id='how-it-works'>
       {/* heading + bullets + cta */}
       <div className="absolute left-1/2 top-[65px] flex w-[1320px] -translate-x-1/2 flex-col items-center gap-[70px]">
         <div className="flex flex-col items-center gap-[38px]">
