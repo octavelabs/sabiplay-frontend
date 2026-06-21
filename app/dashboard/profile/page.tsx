@@ -96,22 +96,22 @@ const STATS = [
     label: "Matches",
     value: "0",
     color: "#8a38f5",
-    bg: "bg-[#8a38f5]",
-    icon: <TargetIcon className="h-4 w-4 text-white" />,
+    bg: "bg-[#8A38F50F]",
+    icon: '/images/profileStatMatch.svg',
   },
   {
     label: "Win Rate",
     value: "0%",
     color: "#e9ad01",
-    bg: "bg-gold",
-    icon: <TrophyIcon className="h-4 w-4 text-white" />,
+    bg: "bg-[#FCC11A0F]",
+    icon: '/images/profileStatWin.svg',
   },
   {
     label: "Total Won",
     value: "₦0",
     color: "#0e9f37",
-    bg: "bg-win",
-    icon: <StormIcon className="h-4 w-4 text-white" />,
+    bg: "bg-[#0E9F370A]",
+    icon: '/images/profileStatWon.svg',
   },
 ];
 
@@ -130,7 +130,7 @@ function Statistics() {
             <div
               className={`flex h-[30px] w-[30px] items-center justify-center rounded-full ${s.bg}`}
             >
-              {s.icon}
+              <img src={s.icon} className="w-4 h-5"/>
             </div>
             <div className="flex flex-col items-center gap-1">
               <span

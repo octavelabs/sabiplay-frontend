@@ -3,17 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSetPageHeader } from "../../../../context/PageHeaderContext";
+import { ArrowLeft } from "lucide-react";
+import { AuthField } from "@/components/auth/AuthField";
 
 /* ------------------------------------------------------------------ */
 /*  Icons                                                             */
 /* ------------------------------------------------------------------ */
 type SVGProps = React.SVGProps<SVGSVGElement>;
 
-const ArrowLeftIcon = (p: SVGProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" {...p}>
-    <path d="m15 18-6-6 6-6" />
-  </svg>
-);
 
 const CameraIcon = (p: SVGProps) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" {...p}>
@@ -82,30 +79,30 @@ export default function EditProfilePage() {
   const [username, setUsername] = useState("@emgee");
 
   return (
-    <div className="mx-auto flex w-full max-w-[987px] flex-col gap-10 pb-10">
+    <div className="mx-auto flex w-full  flex-col gap-10 pb-10">
       {/* back link */}
       <button
         onClick={() => router.back()}
-        className="flex w-fit items-center gap-1 font-display text-[16px] font-medium text-black hover:opacity-70"
+        className="flex w-fit items-center gap-[9px] font-display text-[16px] font-medium text-black hover:opacity-70"
       >
-        <ArrowLeftIcon className="h-4 w-4" />
+        <ArrowLeft size="18" />
         Back
       </button>
 
       {/* form fields */}
       <div className="flex flex-col gap-[22px]">
-        <Field
-          label="Display Name"
-          value={displayName}
-          onChange={setDisplayName}
-          placeholder="Enter your display name"
-        />
-        <Field
-          label="Username"
-          value={username}
-          onChange={setUsername}
-          placeholder="@username"
-        />
+        
+        <AuthField
+                      label="Display name"
+                      type="text"
+                      placeholder="george omoh"
+                    />
+                    <AuthField
+                      label="Username"
+                      type="text"
+                      placeholder="@emgee"
+                    />
+      
       </div>
 
       {/* avatar */}
@@ -115,7 +112,7 @@ export default function EditProfilePage() {
         </span>
         <div className="flex items-center gap-8">
           <Avatar cell={10} className="h-[131px] w-[131px]" />
-          <button className="flex items-center gap-2 rounded-full bg-gold px-5 py-[9px]">
+          <button className="flex items-center gap-2 rounded-full bg-[#FCC11A0D] px-5 py-[9px] border border-[#E9AD0166]">
             <CameraIcon className="h-[19px] w-[19px] text-[#e9ad01]" />
             <span className="font-display text-[16px] font-medium text-[#e9ad01]">
               Change Avatar
@@ -124,10 +121,10 @@ export default function EditProfilePage() {
         </div>
       </div>
 
-      {/* save */}
-      <button className="w-full rounded-[14px] bg-gold py-[18px] font-display text-[22px] font-semibold text-ink">
-        Save Changes
-      </button>
+    
+       <button className={`mt-1 rounded-full border py-2 font-display text-[16px] font-semibold bg-gold text-ink/70 border-gold-deep`}>
+          Save Changes
+        </button>
     </div>
   );
 }

@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --font-display: "Heuvel Grotesk DEMO", "Space Grotesk", system-ui, sans-serif;
-  --font-body: "Helmet Neue", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Nata Sans", system-ui, sans-serif;
+  --font-body: "Nata Sans", "Inter", "Helvetica Neue", Arial, sans-serif;
 }
 
 html {

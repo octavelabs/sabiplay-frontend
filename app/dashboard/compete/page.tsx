@@ -31,7 +31,7 @@ function Tabs({
   onChange: (label: string) => void;
 }) {
   return (
-    <div className="flex max-w-full overflow-auto gap-3.5">
+    <div className="flex max-w-full overflow-auto gap-3.5 scrollbar-hide">
       {TABS.map((t) => {
         const on = active === t.label;
         return (
@@ -177,7 +177,7 @@ type Game = {
 const games: Game[] = [
   {
     tier: "Silver Tier · cup", title: "Sports Champions Cup", prize: "₦20,000", entry: "₦2,000", players: "19/50 players", pct: 24,
-    prizeColor: "#1e1e1e", cardBg: "", border: "bg-[url('/images/silver.png')] bg-cover bg-center", prizeBox: "bg-white/60 border-stone/35", bar: "from-[#bbb8b6] to-[#999999]", btn: "bg-[#97918b] text-white border-black/40",
+    prizeColor: "#1e1e1e", cardBg: "bg-[url('/images/silver.png')] bg-cover bg-center", border: "", prizeBox: "bg-white/60 border-stone/35", bar: "from-[#bbb8b6] to-[#999999]", btn: "bg-[#97918b] text-white border-black/40",
   },
   {
     tier: "Gold Tier · league", title: "Nigeria Premier League Quiz", prize: "₦50,000", entry: "₦5,000", players: "6/100 players", pct: 50,

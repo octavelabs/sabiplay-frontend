@@ -120,8 +120,8 @@ function StartScreen({ onFind }: { onFind: () => void }) {
   const [difficulty, setDifficulty] = useState(DIFFICULTIES[0]);
 
   return (
-    <Centered>
-      <div className="flex w-full max-w-[446px] flex-col items-center gap-6">
+   
+      <div className="flex w-full lg:w-[446px] flex-col items-center gap-6 mx-auto">
         <Image
           src="/images/battle-icon.png"
           alt=""
@@ -177,7 +177,7 @@ function StartScreen({ onFind }: { onFind: () => void }) {
           Find Battle
         </button>
       </div>
-    </Centered>
+  
   );
 }
 
@@ -249,9 +249,15 @@ function FoundScreen({ progress }: { progress: number }) {
           <div className="h-[28px] relative w-full rounded-full bg-gradient-to-b from-[#97918B7A] to-[#312F2D00] p-[4px] shadow-[0px_1px_15px_0px_#FCC11A47,inset_0px_4px_4px_0px_#00000040] border border-[#97918B7A]">
   <div className="h-[20px] w-full overflow-hidden rounded-full bg-stone/15">
     <div
-      className="h-full rounded-full bg-gradient-to-r from-[#fcc11a] to-[#DB9A0D] transition-all duration-200"
+      className="relative h-full rounded-full bg-gradient-to-b from-[#fcc11a] to-[#DB9A0D] transition-all duration-200"
       style={{ width: `${progress}%` }}
-    />
+    >
+      <div
+        className="absolute inset-0 z-10 rounded-full"
+        style={{ backgroundImage: "url('/images/battleLoading.png')", backgroundRepeat: "repeat-x", backgroundSize: "auto 100%" }}
+      />
+      
+      </div>
   </div>
 
   <span
@@ -570,7 +576,7 @@ export default function BattlePage() {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>("start");
   const [outcome, setOutcome] = useState<Outcome>("draw");
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState(30);
 
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
@@ -599,7 +605,7 @@ export default function BattlePage() {
   }, [phase]);
 
   return (
-    <div className="relative min-h-full w-full px-4 lg:px-[37px]">
+    <div className="">
       {phase === "start" && <StartScreen onFind={() => setPhase("searching")} />}
       {phase === "searching" && <SearchingScreen />}
       {phase === "found" && <FoundScreen progress={progress} />}

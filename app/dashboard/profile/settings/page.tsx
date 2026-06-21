@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSetPageHeader } from "../../../context/PageHeaderContext";
 import { Modal } from "../../../components/Modal";
+import { useRouter } from "next/navigation";
 
 /* ------------------------------------------------------------------ */
 /*  Icons                                                             */
@@ -205,7 +206,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
     >
       <span
         className={`absolute top-[3px] h-5 w-5 rounded-full bg-white shadow transition-transform ${
-          on ? "translate-x-[22px]" : "translate-x-[3px]"
+          on ? "translate-x-[1px]" : "-translate-x-[20px]"
         }`}
       />
     </button>
@@ -216,7 +217,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
 /*  Setting row                                                        */
 /* ------------------------------------------------------------------ */
 type SettingItem = {
-  icon: React.ReactNode;
+  icon: string;
   iconBg: string;
   label: string;
   sublabel?: string;
@@ -231,6 +232,7 @@ function SettingRow({ item, notificationsOn, onToggle }: {
   onToggle?: (v: boolean) => void;
 }) {
   const isToggle = item.toggle;
+  const router = useRouter()
   return (
     <button
       onClick={isToggle ? undefined : item.onClick}
@@ -240,9 +242,10 @@ function SettingRow({ item, notificationsOn, onToggle }: {
     >
       {/* icon */}
       <span
-        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${item.iconBg}`}
+        className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${item.iconBg}`}
       >
-        {item.icon}
+        <img src={item.icon} className="relative z-10"/>
+        <img src='/images/profileVector.png' className="absolute inset-0 h-11 w-11 rounded-full" />
       </span>
 
       {/* text */}
@@ -261,7 +264,7 @@ function SettingRow({ item, notificationsOn, onToggle }: {
       {isToggle && onToggle ? (
         <Toggle on={notificationsOn ?? true} onChange={onToggle} />
       ) : (
-        <ChevronRight className="h-5 w-5 shrink-0 text-black/30" />
+        <ChevronRight className="h-5 w-5 shrink-0 text-black/30" onClick={() => router.push(String(item.route))} />
       )}
     </button>
   );
@@ -281,27 +284,34 @@ export default function SettingsPage() {
       label: "Profile",
       sublabel: "@emgee · George Omoh",
       iconBg: "bg-[#fd9933]",
-      icon: <UserIcon className="h-5 w-5 text-white" />,
-      route: '/profile/settings/profile'
+      icon: '/images/profileUser.svg',
+      route: '/dashboard/profile/settings/profile'
     },
     {
       label: "Email",
       sublabel: "georgekyrian@gmail.com",
       iconBg: "bg-[#9557fe]",
-      icon: <MailIcon className="h-5 w-5 text-white" />,
-      route: '/profile/settings/email'
+      icon: '/images/profileMail.svg',
+      route: '/dashboard/profile/settings/email'
+    },
+    {
+      label: "Referrals",
+      sublabel: "See who referred you",
+      iconBg: "bg-[#0F7BBA]",
+      icon: '/images/profileAdd.svg',
+      route: '/dashboard/profile/settings/referrals'
     },
     {
       label: "Password",
       sublabel: "Change Password",
       iconBg: "bg-[#fac843]",
-      icon: <LockIcon className="h-5 w-5 text-white" />,
-      route: '/profile/settings/password'
+      icon: '/images/profileLock.svg',
+      route: '/dashboard/profile/settings/password'
     },
     {
       label: "Notifications",
       iconBg: "bg-[#19ce91]",
-      icon: <BellIcon className="h-5 w-5 text-white" />,
+      icon: '/images/profileNotification.svg',
       toggle: true,
     
     },
@@ -311,20 +321,20 @@ export default function SettingsPage() {
     {
       label: "Log Out",
       iconBg: "bg-[#f45c2e]",
-      icon: <PowerIcon className="h-5 w-5 text-white" />,
+      icon: '/images/profilePower.svg',
       onClick: () => setShowLogout(true),
     },
     {
       label: "Delete my account",
       iconBg: "bg-[#f45c2e]",
-      icon: <TrashIcon className="h-5 w-5 text-white" />,
+      icon: '/images/profileLock.svg',
       onClick: () => setShowDelete(true),
     },
   ];
 
   return (
     <>
-    <div className="mx-auto flex w-full max-w-[984px] flex-col gap-4 pb-10">
+    <div className="mx-auto flex w-full  flex-col gap-4 pb-10">
       {/* search bar */}
       <div className="flex items-center gap-3 rounded-[14px] bg-[#f5f4f1] px-4 py-3">
         <SearchIcon className="h-5 w-5 shrink-0 text-black/40" />
@@ -365,10 +375,10 @@ export default function SettingsPage() {
         </div>
 
         {/* divider */}
-        <div className="h-px w-full bg-black/[0.07]" />
+        {/* <div className="h-px w-full bg-black/[0.07]" /> */}
 
         {/* danger section */}
-        <div className="flex flex-col divide-y divide-black/[0.06] py-4">
+        <div className=" mt-[78px] flex flex-col divide-y divide-black/[0.06] py-4">
           {dangerSettings.map((item) => (
             <div key={item.label} className="py-[19px] first:pt-2 last:pb-2">
               <SettingRow item={item} />

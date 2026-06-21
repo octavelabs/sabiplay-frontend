@@ -48,7 +48,7 @@ function Hero() {
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: "url(/images/sapphire.png)" }}
       /> */}
-      <div className="absolute inset-x-0 top-0 h-[120px] bg-white/80" />
+      {/* <div className="absolute inset-x-0 top-0 h-[120px] bg-white/80" /> */}
       <div className="relative flex flex-col gap-[11px] p-7">
         <div className="flex flex-col gap-2">
           <div className="flex flex-col">
@@ -92,11 +92,11 @@ function Hero() {
 /* ------------------------------------------------------------------ */
 function TabBar({ active, onChange }: { active: Tab; onChange: (t: Tab) => void }) {
   return (
-    <div className="flex overflow-x-auto">
+    <div className="flex overflow-x-auto scrollbar-hide">
       {TABS.map((t) => {
         const on = active === t;
         return (
-          <button key={t} onClick={() => onChange(t)} className="flex w-[133px] shrink-0 flex-col items-center gap-2.5">
+          <button key={t} onClick={() => onChange(t)} className="flex w-[77px] lg:w-[133px] shrink-0 flex-col items-center gap-2.5">
             <span className={`font-display text-[14px] font-semibold ${on ? "text-gold-deep" : "text-[#97918b]"}`}>
               {t}
             </span>

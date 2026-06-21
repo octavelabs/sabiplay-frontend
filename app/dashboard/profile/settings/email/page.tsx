@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSetPageHeader } from "../../../../context/PageHeaderContext";
+import { ArrowLeft, PenLine } from "lucide-react";
+import EmailIllustration from "@/app/assets/EmailConfirmIcon";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -51,29 +53,7 @@ const XIcon = (p: SVGProps) => (
 /* ------------------------------------------------------------------ */
 /*  Email illustration (envelope)                                      */
 /* ------------------------------------------------------------------ */
-function EmailIllustration() {
-  return (
-    <svg width="89" height="89" viewBox="0 0 89 89" fill="none">
-      {/* envelope back flap */}
-      <path d="M4 20 L44.5 4 L85 20 L85 72 L4 72 Z" fill="#cf9b09" />
-      {/* paper/letter peeking out */}
-      <rect x="16" y="10" width="57" height="68" rx="4" fill="#f0f0f0" />
-      {/* paper lines */}
-      <rect x="22" y="22" width="30" height="3" rx="1.5" fill="#cccccc" />
-      <rect x="22" y="30" width="45" height="2" rx="1" fill="#d9d9d9" />
-      <rect x="22" y="36" width="40" height="2" rx="1" fill="#d9d9d9" />
-      <rect x="22" y="42" width="42" height="2" rx="1" fill="#d9d9d9" />
-      <rect x="22" y="48" width="35" height="2" rx="1" fill="#d9d9d9" />
-      <rect x="22" y="54" width="38" height="2" rx="1" fill="#d9d9d9" />
-      {/* envelope left flap */}
-      <path d="M4 20 L44.5 52 L4 72 Z" fill="#fcc11a" />
-      {/* envelope right flap */}
-      <path d="M85 20 L44.5 52 L85 72 Z" fill="#fcc11a" />
-      {/* envelope front */}
-      <path d="M4 72 L44.5 52 L85 72 Z" fill="#cc9804" />
-    </svg>
-  );
-}
+
 
 /* ------------------------------------------------------------------ */
 /*  Shadow stack under illustration                                    */
@@ -95,22 +75,22 @@ function IllustrationShadow() {
 function ViewScreen({ onChangeEmail }: { onChangeEmail: () => void }) {
   const router = useRouter();
   return (
-    <div className="mx-auto flex w-full max-w-[987px] flex-col gap-8 pb-10">
+    <div className="mx-auto flex w-full  flex-col gap-8 pb-10">
       {/* back */}
       <button
         onClick={() => router.back()}
         className="flex w-fit items-center gap-1 font-display text-[16px] font-medium text-black hover:opacity-70"
       >
-        <ArrowLeftIcon className="h-4 w-4" />
+        <ArrowLeft size='18' />
         Back
       </button>
 
       {/* current email field */}
       <div className="flex flex-col gap-2">
         <label className="font-display text-[16px] font-medium text-black">
-          Currenct Email
+          Current Email
         </label>
-        <div className="flex items-center gap-3 rounded-[14px] bg-[#f5f4f1]/50 px-4 py-[14px]">
+        <div className="flex items-center gap-3 rounded-full bg-[#f5f4f1]/50 px-4 py-[14px]">
           <span className="flex-1 font-display text-[18px] font-normal text-[#1e1e1e]/30">
             emgee@mail.com
           </span>
@@ -120,13 +100,8 @@ function ViewScreen({ onChangeEmail }: { onChangeEmail: () => void }) {
         </div>
       </div>
 
-      {/* subtext */}
-      <p className="font-display text-[18px] font-normal text-[#1e1e1e]/60">
-        Manage your email address to receive update &amp; account notifications
-      </p>
-
       {/* save button */}
-      <button className="w-full rounded-[14px] bg-gold py-[18px] font-display text-[22px] font-semibold text-ink">
+      <button className="w-full rounded-full bg-gold py-[15px] font-display text-[22px] font-semibold text-ink border border-[#CF9B09]">
         Save Changes
       </button>
 
@@ -135,7 +110,7 @@ function ViewScreen({ onChangeEmail }: { onChangeEmail: () => void }) {
         onClick={onChangeEmail}
         className="flex w-fit items-center gap-1.5 font-display text-[16px] font-medium text-[#e9ad01] hover:opacity-80"
       >
-        <EditIcon className="h-4 w-4" />
+        <PenLine size='16' />
         Change Email Address
       </button>
     </div>
@@ -156,13 +131,13 @@ function NewEmailScreen({
 }) {
   const router = useRouter();
   return (
-    <div className="mx-auto flex w-full max-w-[987px] flex-col gap-8 pb-10">
+    <div className="mx-auto flex w-full  flex-col gap-8 pb-10">
       {/* back */}
       <button
         onClick={() => router.back()}
         className="flex w-fit items-center gap-1 font-display text-[16px] font-medium text-black hover:opacity-70"
       >
-        <ArrowLeftIcon className="h-4 w-4" />
+        <ArrowLeft  />
         Back
       </button>
 
@@ -182,15 +157,11 @@ function NewEmailScreen({
         </div>
       </div>
 
-      {/* subtext */}
-      <p className="font-display text-[18px] font-normal text-[#1e1e1e]/60">
-        Manage your email address to receive update &amp; account notifications
-      </p>
 
       {/* update button */}
       <button
         onClick={onUpdate}
-        className="w-[320px] rounded-[14px] bg-gold py-[18px] font-display text-[22px] font-semibold text-ink"
+        className="w-[320px] rounded-full border border-[#CF9B09] bg-gold py-[18px] font-display text-[22px] font-semibold text-ink"
       >
         Update Email
       </button>
@@ -212,8 +183,8 @@ function EnterPasswordModal({
   const [show, setShow] = useState(false);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="w-[606px] rounded-[24px] bg-white px-[37px] py-[37px]">
+    <div className="fixed inset-0 z-50 pl-[371px] flex items-center justify-center bg-black/40">
+      <div className="w-[606px] rounded-[32px] bg-white px-[37px] py-[37px]">
         {/* header row */}
         <div className="mb-6 flex items-start justify-between">
           <div className="flex flex-col gap-0.5">
@@ -237,7 +208,7 @@ function EnterPasswordModal({
           <label className="font-display text-[16px] font-medium text-black">
             Password
           </label>
-          <div className="flex items-center rounded-[14px] bg-[#f5f4f1] px-4 py-[18px]">
+          <div className="flex items-center rounded-full bg-[#f5f4f1] px-4 py-[18px]">
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -262,7 +233,7 @@ function EnterPasswordModal({
         {/* continue button */}
         <button
           onClick={onContinue}
-          className="w-full rounded-[14px] bg-gold py-[18px] font-display text-[22px] font-semibold text-ink"
+          className="w-full rounded-full bg-gold py-[15px] font-display text-[22px] font-semibold text-ink border border-[#CF9B09]"
         >
           Continue
         </button>
@@ -282,8 +253,8 @@ function EmailConfirmationModal({
   onClose: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="relative w-[606px] rounded-[24px] bg-white px-[70px] py-[37px]">
+    <div className="fixed inset-0 pl-[371px] z-50 flex items-center justify-center bg-black/40">
+      <div className="relative w-[606px] rounded-[32px] bg-white px-[70px] py-[37px]">
         {/* close */}
         <button
           onClick={onClose}
@@ -295,7 +266,7 @@ function EmailConfirmationModal({
         {/* illustration + shadow */}
         <div className="mb-8 flex flex-col items-center">
           <EmailIllustration />
-          <IllustrationShadow />
+        
         </div>
 
         {/* text */}
@@ -329,7 +300,7 @@ function EmailConfirmationModal({
 /*  Page                                                               */
 /* ------------------------------------------------------------------ */
 export default function EmailSettingsPage() {
-  useSetPageHeader({ title: "Email", subtitle: "" });
+  useSetPageHeader({ title: "Email", subtitle: "Manage your email address to receive update & account notifications" });
 
   const [phase, setPhase] = useState<Phase>("view");
   const [newEmail, setNewEmail] = useState("");
