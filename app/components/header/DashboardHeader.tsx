@@ -38,7 +38,7 @@ export default function DashboardHeader({
   const firstName = user.name.split(" ")[0];
 
   return (
-    <header className="flex items-center justify-between px-4 pt-6 lg:px-[35px] lg:pt-[40px] xl:px-[57px]">
+    <header className="flex items-center justify-between px-4 pt-6 lg:px-[40px] lg:pt-[40px]">
       {node ?? (
         <>
           {/* mobile logo */}

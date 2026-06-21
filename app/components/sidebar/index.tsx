@@ -17,15 +17,15 @@ import {
 } from "./icons";
 
 const NAV = [
-  { label: "Home", href: "/dashboard/home", Icon: HomeIcon },
-  { label: "Compete", href: "/dashboard/compete", Icon: CompeteIcon },
-  { label: "Battle", href: "/dashboard/battle", Icon: BattleIcon },
-  { label: "Leaderboard", href: "/dashboard/leaderboard", Icon: LeaderboardIcon },
-  { label: "Wallet", href: "/dashboard/wallet", Icon: WalletIcon },
-  { label: "Profile", href: "/dashboard/profile", Icon: ProfileIcon },
-  { label: "Achievements", href: "/dashboard/achievements", Icon: AchievementsIcon },
-  { label: "Practice", href: "/dashboard/practice", Icon: PracticeIcon },
-  { label: "Campus", href: "/dashboard/campus", Icon: CampusIcon },
+  { label: "Home", href: "/dashboard/home", Icon: HomeIcon, showOnMobile: true },
+  { label: "Compete", href: "/dashboard/compete", Icon: CompeteIcon, showOnMobile: true },
+  { label: "Battle", href: "/dashboard/battle", Icon: BattleIcon, showOnMobile: true },
+  { label: "Leaderboard", href: "/dashboard/leaderboard", Icon: LeaderboardIcon, showOnMobile: true },
+  { label: "Wallet", href: "/dashboard/wallet", Icon: WalletIcon, showOnMobile: false },
+  { label: "Profile", href: "/dashboard/profile", Icon: ProfileIcon, showOnMobile: true },
+  { label: "Achievements", href: "/dashboard/achievements", Icon: AchievementsIcon, showOnMobile: false },
+  { label: "Practice", href: "/dashboard/practice", Icon: PracticeIcon, showOnMobile: false },
+  { label: "Campus", href: "/dashboard/campus", Icon: CampusIcon, showOnMobile: false },
 ];
 
 /** Gold SabiPlay wordmark, recolored from the dark logo PNG via a CSS mask. */
@@ -117,17 +117,19 @@ export default function SideBar() {
 /** Bottom navigation for small screens (the desktop sidebar is hidden < lg). */
 export function MobileNav() {
   const pathname = usePathname();
-  const items = NAV.slice(0, 5);
+  const items = NAV.filter(item => item.showOnMobile);
+
+
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex h-[68px] items-center justify-around border-t border-gold/30 bg-ink-900 lg:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex h-[68px] items-center justify-around border-t border-[#E2E2DB]  lg:hidden">
       {items.map(({ label, href, Icon }) => {
         const active = pathname === href;
         return (
           <Link
             key={label}
             href={href}
-            className={`flex flex-col items-center gap-1 text-[11px] font-medium ${
-              active ? "text-gold" : "text-white/70"
+            className={`flex h-full flex-col items-center justify-center gap-1 text-[11px] font-medium ${
+              active ? "border-t-2 border-gold text-gold" : "text-[#97918B]"
             }`}
           >
             <Icon className="h-[22px] w-[22px]" />

@@ -3,17 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSetPageHeader } from "../../../../context/PageHeaderContext";
+import { ArrowLeft } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /*  Icons                                                             */
 /* ------------------------------------------------------------------ */
 type SVGProps = React.SVGProps<SVGSVGElement>;
 
-const ArrowLeftIcon = (p: SVGProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" {...p}>
-    <path d="m15 18-6-6 6-6" />
-  </svg>
-);
 
 const LinkIcon = (p: SVGProps) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" {...p}>
@@ -22,23 +18,6 @@ const LinkIcon = (p: SVGProps) => (
   </svg>
 );
 
-const GiftIcon = (p: SVGProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" {...p}>
-    <rect x="3" y="8" width="18" height="4" rx="1" />
-    <path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7" />
-    <path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8H7.5z" />
-    <path d="M16.5 8a2.5 2.5 0 0 0 0-5C14 3 12 8 12 8h4.5z" />
-  </svg>
-);
-
-const UserAddIcon = (p: SVGProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" {...p}>
-    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-    <circle cx="9" cy="7" r="4" />
-    <line x1="19" y1="8" x2="19" y2="14" />
-    <line x1="22" y1="11" x2="16" y2="11" />
-  </svg>
-);
 
 const ShareIcon = (p: SVGProps) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" {...p}>
@@ -88,32 +67,14 @@ function Avatar({ cell, className = "" }: { cell: number; className?: string }) 
 /* ------------------------------------------------------------------ */
 function HeroBanner() {
   return (
-    <div className="relative" style={{ paddingTop: 94 }}>
+    <div className="relative" >
       {/* decorative floating coin illustration */}
-      <div className="absolute right-[180px] top-0 flex h-[274px] w-[274px] items-center justify-center rounded-full bg-gradient-to-br from-gold to-[#f5a623] text-[100px] shadow-[0_8px_32px_rgba(245,166,35,0.35)]">
-        💰
-      </div>
+      
       {/* banner */}
-      <div className="relative h-[162px] overflow-hidden rounded-[20px] bg-[#e84d0b] px-8">
-        {/* wave decorations */}
-        <div className="pointer-events-none absolute inset-0 opacity-20">
-          {[...Array(5)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full border-2 border-white"
-              style={{
-                width: 80 + i * 60,
-                height: 80 + i * 60,
-                left: -20 + i * 20,
-                top: -20 + i * 10,
-                opacity: 0.4 - i * 0.05,
-              }}
-            />
-          ))}
-        </div>
+      <div className="relative h-[162px] rounded-[32px] bg-[#e84d0b] px-8">
         {/* text content */}
         <div className="relative flex h-full max-w-[415px] flex-col justify-center gap-2">
-          <span className="w-fit rounded-full bg-gold px-3 py-[3px] font-display text-[11px] font-normal text-ink/60">
+          <span className="w-fit rounded-[8px] bg-gold px-3 py-[3px] font-display text-[11px] font-normal text-ink/60 border border-[#D7A415]">
             Earn some ₦₦
           </span>
           <div className="flex flex-col gap-0.5">
@@ -124,6 +85,12 @@ function HeroBanner() {
               for each friend that you invite
             </span>
           </div>
+        </div>
+        <div className="w-[352px] bg-cover bg-center absolute -bottom-0 right-20" style={{
+          backgroundImage: "url('/images/bannerBg.png')",
+         
+        }}>
+          <img src='/images/referralBanner.svg' className="" />
         </div>
       </div>
     </div>
@@ -147,9 +114,9 @@ function InviteLinkRow() {
       <span className="font-display text-[16px] font-normal text-black/50">
         Your invite link:
       </span>
-      <div className="flex h-[50px] overflow-hidden rounded-[12px]">
+      <div className="flex h-[50px] gap-1 overflow-hidden rounded-[12px]">
         {/* link display */}
-        <div className="flex flex-1 items-center justify-between gap-3 bg-[#f8f8f8] px-4">
+        <div className="flex flex-1 items-center justify-between gap-3 bg-[#f8f8f8] px-4 rounded-[12px]">
           <span className="truncate font-display text-[15px] font-normal text-stone">
             Sabiplay.app/invite/user/@emgee
           </span>
@@ -158,7 +125,7 @@ function InviteLinkRow() {
         {/* copy button */}
         <button
           onClick={handleCopy}
-          className="flex shrink-0 items-center justify-center bg-gold px-6 font-display text-[16px] font-medium text-ink/70 transition-opacity hover:opacity-90"
+          className="flex rounded-[12px] shrink-0 items-center justify-center bg-gold px-6 font-display text-[16px] font-medium text-ink/70 transition-opacity hover:opacity-90"
         >
           {copied ? "Copied!" : "Copy link"}
         </button>
@@ -176,25 +143,22 @@ function SummaryCard({
   label,
   value,
   cardBg,
+  bgImage
 }: {
   stripBg: string;
-  icon: React.ReactNode;
+  icon: string;
   label: string;
   value: string;
   cardBg: string;
+  bgImage: string
 }) {
   return (
     <div className={`flex flex-1 flex-col overflow-hidden rounded-[16px] ${cardBg}`}>
       {/* colored strip with icon */}
       <div className={`relative flex h-[72px] items-center justify-center overflow-hidden ${stripBg}`}>
-        {/* wave decorations */}
-        <div className="pointer-events-none absolute inset-0 opacity-20">
-          <div className="absolute -left-8 -top-8 h-32 w-32 rounded-full border-[6px] border-white" />
-          <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full border-[4px] border-white" />
-        </div>
-        <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
-          {icon}
-        </div>
+       
+          <img src={icon} className="relative z-10 flex h-10 w-10"/>
+          <img src={bgImage} className="absolute h-[72px] right-0"/>
       </div>
       {/* stats */}
       <div className="flex flex-col gap-0.5 px-5 py-4">
@@ -291,13 +255,13 @@ export default function ReferralPage() {
   const router = useRouter();
 
   return (
-    <div className="mx-auto flex w-full max-w-[986px] flex-col gap-8 pb-10">
+    <div className="mx-auto flex w-full  flex-col gap-8 pb-10">
       {/* back */}
       <button
         onClick={() => router.back()}
-        className="flex w-fit items-center gap-1 font-display text-[16px] font-medium text-black hover:opacity-70"
+        className="flex w-fit items-center gap-[9px] font-display text-[16px] font-medium text-black hover:opacity-70"
       >
-        <ArrowLeftIcon className="h-4 w-4" />
+        <ArrowLeft size="18" />
         Back
       </button>
 
@@ -313,14 +277,16 @@ export default function ReferralPage() {
           <SummaryCard
             stripBg="bg-[#fcc438]"
             cardBg="bg-[#fefbee]"
-            icon={<GiftIcon className="h-5 w-5 text-white" />}
+            icon='/images/referralGift.svg'
+            bgImage='/images/referralVectorYellow.png'
             label="Earned"
             value="₦5000"
           />
           <SummaryCard
             stripBg="bg-[#6490d5]"
             cardBg="bg-[#f9f9f9]"
-            icon={<UserAddIcon className="h-5 w-5 text-white" />}
+            icon='/images/profileAdd.svg'
+            bgImage='/images/referralVectorBlue.png'
             label="Referrals"
             value="09"
           />

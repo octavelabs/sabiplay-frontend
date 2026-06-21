@@ -3,17 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSetPageHeader } from "../../../../context/PageHeaderContext";
+import { ArrowLeft } from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /*  Icons                                                              */
 /* ------------------------------------------------------------------ */
 type SVGProps = React.SVGProps<SVGSVGElement>;
 
-const ArrowLeftIcon = (p: SVGProps) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" {...p}>
-    <path d="m15 18-6-6 6-6" />
-  </svg>
-);
 
 const LockIcon = (p: SVGProps) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" {...p}>
@@ -92,13 +88,13 @@ export default function PasswordSettingsPage() {
   const [confirm, setConfirm] = useState("");
 
   return (
-    <div className="mx-auto flex w-full max-w-[987px] flex-col gap-8 pb-10">
+    <div className="mx-auto flex w-full  flex-col gap-8 pb-10">
       {/* back */}
       <button
         onClick={() => router.back()}
         className="flex w-fit items-center gap-1 font-display text-[16px] font-medium text-black hover:opacity-70"
       >
-        <ArrowLeftIcon className="h-4 w-4" />
+        <ArrowLeft size={18}/>
         Back
       </button>
 
