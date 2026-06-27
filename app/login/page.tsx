@@ -8,15 +8,38 @@ import { Button } from "@/components/Button";
 import { AuthField } from "@/components/auth/AuthField";
 import { GoogleButton } from "@/components/auth/GoogleButton";
 import { MailIcon, LockIcon, EyeIcon, EyeOffIcon } from "@/components/auth/icons";
+import { useFormik } from "formik";
+import { LoginRequest } from "../lib/types/auth";
+import { loginSchema } from "../lib/validators";
+import { useLoginMutation } from "../hooks/auth/authMutation";
+import { useRouter } from "next/navigation";
+import { ACCESS_TOKEN_STORAGE_KEY } from "../lib/auth";
 
 export default function LoginPage() {
   const [show, setShow] = useState(false);
+  const router = useRouter()
+  const {mutate: login, isPending } = useLoginMutation()
+    const formik = useFormik<LoginRequest>({
+    initialValues: {
+      email: "",
+      password: "",    
+    },
+    validationSchema: loginSchema,
+    validateOnMount: true,
+    onSubmit: (values) => {
+      login(values, { onSuccess: (response) => {
+        window.localStorage.setItem(ACCESS_TOKEN_STORAGE_KEY, response.token)
+        router.push("/dashboard/home")
+       }
+      });
+    },
+  });
 
   return (
     <AuthLayout>
       <form
-        className="flex flex-col items-center gap-[60px]"
-        onSubmit={(e) => e.preventDefault()}
+        className="flex flex-col items-center gap-[60px] "
+        onSubmit={formik.handleSubmit}
       >
         {/* header */}
         <div className="flex flex-col items-center gap-[38px]">
@@ -41,13 +64,19 @@ export default function LoginPage() {
             <AuthField
               label="Email Address"
               type="email"
+              value={formik.values.email}
+              onChange={(e) => formik.setFieldValue("email", e.target.value)}
+                onBlur={() => formik.setFieldTouched("email", true)}
               placeholder="you@example.com"
               icon={<MailIcon className="h-[26px] w-[26px]" />}
             />
             <AuthField
               label="Password"
               type={show ? "text" : "password"}
-              placeholder="••••••••••••••••"
+              placeholder=""
+              value={formik.values.password}
+              onChange={(e) => formik.setFieldValue("password", e.target.value)}
+                onBlur={() => formik.setFieldTouched("password", true)}
               icon={<LockIcon className="h-[26px] w-[26px]" />}
               labelAction={
                 <Link
@@ -72,7 +101,7 @@ export default function LoginPage() {
                 </button>
               }
             />
-            <Button variant="gold" className="w-full">
+            <Button loading={isPending} variant="gold" className="w-full" type='submit'>
               Log in
             </Button>
             <GoogleButton label="Sign in with Google" />

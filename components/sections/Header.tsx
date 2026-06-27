@@ -26,7 +26,7 @@ export function Header() {
 
       <div className="flex items-center gap-[41px]">
         <a
-          href="#"
+          href="/login"
           className="font-display text-[18px] font-semibold leading-[22px] text-black/60 transition-colors hover:text-black"
         >
           Login

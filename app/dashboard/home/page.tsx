@@ -13,12 +13,13 @@ import {
   JoinIcon,
   LevelIcon,
   BoltIcon,
-  TrophyIcon,
+  
   TargetIcon,
 } from "./icons";
-import { WalletCard } from "../../components/WalletCard";
 import { BattleIcon, BellIcon } from "@/app/components/sidebar/icons";
 import { useSetPageHeader } from "@/app/context/PageHeaderContext";
+import { Competition } from "@/app/lib/types/compete";
+import { WalletCard } from "../wallet/components/WalletCard";
 
 type Stat = {
   value: string;
@@ -199,12 +200,19 @@ const competitions: Tier[] = [
     prizeBox: "bg-[#d9961b]/[0.07] border-[#d9961b]/40", bar: "from-[#f0bb5a] to-[#d9961b]",
     btn: "bg-[#d9961b] text-white border-[#b47445]",
   },
+   {
+    tier: "Diamond Tier · daily", title: "Beat the Time Challenge", prize: "₦10,000", entry: "₦500",
+    players: "0/200 players", pct: 32, prizeColor: "#0e9f37",
+    header: "from-[#fdf3e1] to-white", border: "border-[#0e9f37]/25", bg: "bg-[url('/images/diamond.png')] bg-cover bg-center",
+    prizeBox: "bg-[#0e9f37]/[0.07] border-[#0e9f37]/40", bar: "from-[#6BD789] to-[#0e9f37]",
+    btn: "bg-[#0e9f37] text-white border-[#157831]",
+  },
 ];
 
 function CompetitionCard({ c }: { c: Tier }) {
   return (
     <div className={`flex flex-1 flex-col overflow-hidden rounded-[28px] bg-white border lg:rounded-[20px] ${c.border}`}>
-      <div className={`flex flex-col   ${c.header}`}>
+      <div className={`flex flex-col `}>
         <div className={`flex items-center justify-between  p-[15px] pt-[80px] ${c.bg}`}>
           <span className={`font-display text-[12px] font-medium uppercase rounded-full tracking-wide text-black/60 py-[2px] px-[10px] ${c.btn}`}>
             {c.tier}

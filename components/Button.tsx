@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Loader from "./Loader";
 
 type Variant = "dark" | "gold" | "white";
 
@@ -19,6 +20,8 @@ export function Button({
   size = "md",
   type = "button",
   onClick,
+  loading,
+  disabled,
 }: {
   children: ReactNode;
   variant?: Variant;
@@ -26,6 +29,8 @@ export function Button({
   size?: "xs" | "sm" | "md";
   type?: "button" | "submit";
   onClick?: () => void;
+  loading?: boolean;
+  disabled?: boolean;
 }) {
   const pad =
     size === "xs"
@@ -37,9 +42,12 @@ export function Button({
     <button
       type={type}
       onClick={onClick}
-      className={`inline-flex items-center justify-center gap-2.5 whitespace-nowrap rounded-pill font-display font-semibold leading-tight transition-transform duration-150 hover:scale-[1.02] active:scale-95 ${pad} ${variants[variant]} ${className}`}
+      disabled={disabled}
+      className={`inline-flex items-center justify-center gap-2.5 whitespace-nowrap rounded-pill font-display font-semibold leading-tight transition-transform duration-150 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none ${pad} ${variants[variant]} ${className}`}
     >
-      {children}
+      {loading ? 
+      <Loader />
+      :children}
     </button>
   );
 }

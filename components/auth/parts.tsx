@@ -6,10 +6,12 @@ export function BackButton({
   children = "Back",
   onClick,
   href,
+  className
 }: {
   children?: ReactNode;
   onClick?: () => void;
   href?: string;
+  className?: string
 }) {
   const inner = (
     <span className="inline-flex items-center gap-[3px] font-display text-[14px] font-normal leading-[19px] text-black">
@@ -19,7 +21,7 @@ export function BackButton({
   );
   if (href) return <Link href={href}>{inner}</Link>;
   return (
-    <button type="button" onClick={onClick}>
+    <button type="button" onClick={onClick} className={className}>
       {inner}
     </button>
   );

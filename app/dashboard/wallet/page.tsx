@@ -2,14 +2,13 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { useSetPageHeader } from "../../context/PageHeaderContext";
-import { WalletCard } from "../../components/WalletCard";
+import { WalletCard } from "./components/WalletCard";
 import { Button } from "@/components/Button";
 import {
   ClockIcon,
   VoucherIcon,
   ArrowUpIcon,
   TrendUpIcon,
-  TrophyIcon,
   PlusIcon,
 } from "../home/icons";
 import {
@@ -20,7 +19,11 @@ import {
   TickIcon,
   TrophyOffIcon,
   TrendDownIcon,
+  TrophyIcon,
 } from "./icons";
+import { useGetWalletDetailsQuery, useGetWalletTransactionsQuery } from "@/app/hooks/wallet/walletQuery";
+import Loader from "@/components/Loader";
+// import { useFundWalletMutation } from "@/app/hooks/wallet/walletMutation";
 
 type ModalKind = "fund" | "withdraw" | "addBank" | "pin" | "success" | null;
 
@@ -71,6 +74,9 @@ const transactions = [
 ];
 
 function TransactionHistory() {
+  const {data, isLoading} = useGetWalletTransactionsQuery()
+  const walletTransactions = data?.transactions ?? []
+
   return (
     <div className="flex flex-col gap-[23px]">
       <span className="flex items-center gap-1.5 font-display text-[16px] font-semibold text-black/80">
@@ -78,7 +84,8 @@ function TransactionHistory() {
         Transaction History
       </span>
       <div className="flex flex-col gap-[15px]">
-        <span className="font-display text-[12px] font-medium text-black/40">13 May 2026</span>
+        <span className="font-display text-[12px] font-medium text-black/40">{new Date().toDateString()}</span>
+        {isLoading ? <Loader /> : walletTransactions.length > 0 ? 
         <div className="flex flex-col rounded-[20px] bg-[#f5f4f1] px-[23px] py-[31px]">
           {transactions.map((t, i) => (
             <div key={i}>
@@ -110,7 +117,7 @@ function TransactionHistory() {
               </div>
             </div>
           ))}
-        </div>
+        </div> : <div>No Transactions yet</div>}
       </div>
     </div>
   );
@@ -171,6 +178,8 @@ function ModalHeader({
 function FundModal({ onClose }: { onClose: () => void }) {
   const [amount, setAmount] = useState("");
   const chips = ["₦1,000", "₦2,000", "₦5,000", "₦10,000"];
+
+  // const {mutate, isPending} = useFundWalletMutation()
   return (
     <Modal onClose={onClose}>
       <div className="flex flex-col gap-[18px] px-[39px] py-[33px]">
@@ -182,7 +191,7 @@ function FundModal({ onClose }: { onClose: () => void }) {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="₦ Enter amount"
-                className="w-full bg-transparent font-display text-[24px] font-bold text-ink outline-none placeholder:text-black/60"
+                className="w-full bg-transparent font-display text-[24px] font-bold text-[#00000099] outline-none placeholder:text-black/60"
               />
             </div>
             <div className="flex flex-wrap gap-2">
@@ -416,17 +425,20 @@ export default function WalletPage() {
     }
   }, []);
 
+  const {data, isLoading} = useGetWalletDetailsQuery()
+  const walletDetails = data?.wallet
+
   return (
     <div className="mx-auto flex w-full  flex-col gap-9">
-      {/* balance + stats */}
-      <div className="flex flex-col gap-4 lg:flex-row">
-        <WalletCard onFund={() => setModal("fund")} onWithdraw={() => setModal("withdraw")} />
+      
+      {isLoading ? <Loader /> : <div className="flex flex-col gap-4 lg:flex-row">
+        <WalletCard onFund={() => setModal("fund")} onWithdraw={() => setModal("withdraw")}/>
         <div className="flex flex-1 flex-col gap-4 sm:flex-row">
           <StatCard
-            icon={<TrophyIcon className="h-7 w-7 text-win" />}
+            icon={<TrophyIcon stroke='#0E9F37' />}
             trend={<TrendUpIcon className="h-5 w-5 text-win" />}
             label="Total Won"
-            value="₦0"
+            value={`₦${walletDetails?.total_won}`}
             color="#0e9f37"
             tint="rgba(14,159,55,0.09)"
           />
@@ -434,12 +446,12 @@ export default function WalletPage() {
             icon={<TrophyOffIcon className="h-7 w-7 text-[#f45c2e]" />}
             trend={<TrendDownIcon className="h-5 w-5 text-[#f45c2e]" />}
             label="Total Spent"
-            value="₦6,500"
+             value={`₦${walletDetails?.total_spent}`}
             color="#f45c2e"
             tint="rgba(244,67,54,0.09)"
           />
         </div>
-      </div>
+      </div>}
 
       <TransactionHistory />
 

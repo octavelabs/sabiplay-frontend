@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { AppQueryProvider } from "./lib/react-query/provider";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 const body = Inter({
@@ -28,7 +31,12 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Nata+Sans:wght@100..900&display=swap" rel="stylesheet" />
       </head>
-      <body className="bg-white font-body text-ink antialiased">{children}</body>
+      <body className="bg-white font-body text-ink antialiased">
+          <AppQueryProvider>
+            {children}
+            <ToastContainer />
+          </AppQueryProvider>
+        </body>
     </html>
   );
 }
