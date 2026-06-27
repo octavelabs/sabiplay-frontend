@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSetPageHeader } from "../../context/PageHeaderContext";
+import { useGetAchievementQuery } from "@/app/hooks/achievement/achievementQuery";
 
 /* ------------------------------------------------------------------ */
 /*  Data                                                              */
@@ -13,19 +14,17 @@ type Category = Exclude<Tab, "All">;
 type Badge = { name: string; icon: string; category: Category; unlocked?: boolean };
 
 const BADGES: Badge[] = [
-  { name: "First Blood", icon: "⚔️", category: "Milestones" },
-  { name: "Hot Streak", icon: "🔥", category: "Streak", unlocked: true },
-  { name: "History King", icon: "📜", category: "Categories" },
-  { name: "Math Genius", icon: "🧮", category: "Categories" },
-  { name: "1000 Questions", icon: "🎯", category: "Milestones" },
-  { name: "Campus Hero", icon: "🏫", category: "Campus" },
-  { name: "Millionaire Bound", icon: "💰", category: "Milestones" },
-  { name: "Referral Boss", icon: "🎭", category: "Special" },
-  { name: "Perfect Score", icon: "💎", category: "Milestones" },
-  { name: "Sports Fan", icon: "⚽", category: "Categories" },
-  { name: "Campus Hero", icon: "🏫", category: "Campus" },
-  { name: "Speed Demon", icon: "⚡", category: "Streak" },
-  { name: "Tech Wizard", icon: "🔬", category: "Categories" },
+  { name: "First Blood", icon: "/images/firstBlood.svg", category: "Milestones",    },
+  { name: "Hot Streak", icon: "/images/hotStreak.svg", category: "Streak"},
+  { name: "History King", icon: "/images/historyKing.svg", category: "Categories", unlocked: true},
+  { name: "Math Genius", icon: "/images/mathGenius.svg", category: "Categories" },
+  { name: "1000 Questions", icon: "/images/speedDemon.svg", category: "Milestones" },
+  { name: "Campus Hero", icon: "/images/campusHero.svg", category: "Campus" },
+  { name: "Millionaire Bound", icon: "/images/millionaireBound.svg", category: "Milestones" },
+  { name: "Referral Boss", icon: "/images/referralBoss.svg", category: "Special" },
+  { name: "Perfect Score", icon: "/images/perfectScore.svg", category: "Milestones" },
+  { name: "Sports Fan", icon: "/images/sportFan.svg", category: "Categories" },
+  { name: "Tech Wizard", icon: "/images/techWizard.svg", category: "Categories" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -66,13 +65,14 @@ function Tabs({ active, onChange }: { active: Tab; onChange: (t: Tab) => void })
 function BadgeTile({ badge }: { badge: Badge }) {
   return (
     <div className="flex flex-col items-center gap-2.5">
-      <span
+      {/* <span
         className={`flex h-[47px] items-center justify-center text-[40px] leading-none ${
           badge.unlocked ? "" : "opacity-60 grayscale"
         }`}
       >
         {badge.icon}
-      </span>
+      </span> */}
+      <img src={badge.icon} className={`h-[47px] w-[47px] mx-auto ${badge.unlocked ? "" : "grayscale"}`} />
       <span
         className={`flex h-[27px] w-[149px] items-center justify-center rounded-full px-2.5 font-display text-[14px] font-semibold text-white ${
           badge.unlocked ? "bg-[#e9ad01]" : "bg-[#a8a39d]"
@@ -90,7 +90,8 @@ function BadgeTile({ badge }: { badge: Badge }) {
 export default function AchievementsPage() {
   useSetPageHeader({ hidden: true });
   const [tab, setTab] = useState<Tab>("All");
-
+  const {data, isLoading} = useGetAchievementQuery()
+console.log(data?.achievements)
   const visible = tab === "All" ? BADGES : BADGES.filter((b) => b.category === tab);
 
   return (

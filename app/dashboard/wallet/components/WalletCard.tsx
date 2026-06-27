@@ -1,18 +1,21 @@
 import Image from "next/image";
-import { EyeIcon, PlusIcon, WithdrawIcon } from "../dashboard/home/icons";
+import { EyeIcon, PlusIcon, WithdrawIcon } from "../../../dashboard/home/icons";
+import { formatCurrency } from "@/app/utils/helpers";
+import { useGetWalletDetailsQuery } from "@/app/hooks/wallet/walletQuery";
 
 /** Gold wallet-balance card with Fund / Withdraw actions (shared dashboard widget). */
 export function WalletCard({
-  balance = "₦24,500",
   onFund,
   onWithdraw,
   className = "",
 }: {
-  balance?: string;
   onFund?: () => void;
   onWithdraw?: () => void;
   className?: string;
 }) {
+  const {data} = useGetWalletDetailsQuery()
+    const walletDetails = data?.wallet
+
   return (
     <div
       className={`relative h-[199px] w-full overflow-hidden rounded-[22px] bg-gold sm:w-[408px] ${className}`}
@@ -24,8 +27,8 @@ export function WalletCard({
         sizes="408px"
         className="object-cover opacity-90"
       />
-      <div className="relative flex h-full flex-col justify-between p-[26px]">
-        <div className="flex flex-col gap-2">
+      <div className="relative flex h-full flex-col py-[18px] px-[26px]">
+        <div className="flex flex-col">
           <div className="flex items-center justify-between">
             <span className="font-display text-[14px] font-medium leading-[19px] text-ink/80">
               Wallet Balance
@@ -35,10 +38,10 @@ export function WalletCard({
             </span>
           </div>
           <span className="font-display text-[32px] lg:text-[48px] font-medium leading-[47px] lg:leading-[63px] text-ink">
-            {balance}
+            {`₦${formatCurrency(walletDetails?.balance)}`}
           </span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-4">
           <button
             onClick={onFund}
             className="flex flex-1 items-center justify-center gap-1 rounded-[81px] bg-ink/[0.13] py-2.5 font-display text-[16px] font-medium text-black"

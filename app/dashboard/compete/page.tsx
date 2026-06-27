@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 import { useSetPageHeader } from "../../context/PageHeaderContext";
 import { Modal } from "../../components/Modal";
 import { UsersIcon, ClockIcon, ChevronRightIcon, TrophyIcon } from "../home/icons";
+import { useGetCompetitonsQuery } from "../../hooks/competitions/competeQuery";
+import { Competition, ListCompetitionsParams } from "../../lib/types/compete";
+import { formatCurrency } from "@/app/utils/helpers";
+import Loader from "@/components/Loader";
+
 
 /** Turn a competition title into a URL slug for the detail route. */
 const slugify = (s: string) =>
@@ -22,6 +27,14 @@ const TABS = [
   { label: "Daily" },
   { label: "Battles" },
 ];
+
+const TAB_TYPE_MAP: Record<string, ListCompetitionsParams["type"]> = {
+  League: "league",
+  Cup: "cup",
+  "Mini Cup": "mini-cup",
+  Daily: "daily",
+  Battles: "battle",
+};
 
 function Tabs({
   active,
@@ -45,11 +58,11 @@ function Tabs({
             }`}
           >
             {t.label}
-            {t.badge && (
+            {/* {t.badge && (
               <span className="flex h-[18px] w-[18px] items-center justify-center rounded-full bg-gold font-display text-[12px] font-semibold text-ink">
                 {t.badge}
               </span>
-            )}
+            )} */}
           </button>
         );
       })}
@@ -124,7 +137,7 @@ function JoinedCard({ c, onView }: { c: Joined; onView: () => void }) {
             {c.tier}
           </span>
           <span className="flex items-center gap-1 font-display text-[12px] font-semibold" style={{ color: c.color }}>
-            <TrophyIcon className="h-3.5 w-3.5" />
+            <img src='/images/profileStatWin.svg' className="h-3.5 w-3.5" />
             {c.prize}
           </span>
         </div>
@@ -174,65 +187,84 @@ type Game = {
   btn: string;
 };
 
-const games: Game[] = [
-  {
-    tier: "Silver Tier · cup", title: "Sports Champions Cup", prize: "₦20,000", entry: "₦2,000", players: "19/50 players", pct: 24,
-    prizeColor: "#1e1e1e", cardBg: "bg-[url('/images/silver.png')] bg-cover bg-center", border: "", prizeBox: "bg-white/60 border-stone/35", bar: "from-[#bbb8b6] to-[#999999]", btn: "bg-[#97918b] text-white border-black/40",
+const competitionCardOptions = {
+  sapphire: {
+   prizeColor: "#0f8cba",
+    header: "from-[#e3f1f8] to-white", border: "border-[#0f52ba]/20", bg: "bg-[url('/images/sapphire.png')] bg-cover bg-center",
+    prizeBox: "bg-[#0f7bba]/[0.07] border-[#0f52ba]/40", bar: "from-[#6490d5] to-[#0f7bba]",
+    btn: "bg-[#0f7bba] text-white border-[#066182]",
   },
-  {
-    tier: "Gold Tier · league", title: "Nigeria Premier League Quiz", prize: "₦50,000", entry: "₦5,000", players: "6/100 players", pct: 50,
-    prizeColor: "#cf9b09", cardBg: "bg-[url('/images/gold.png')] bg-cover bg-center", border: "border-gold/25", prizeBox: "bg-[#fff6de] border-gold/40", bar: "from-[#ffdf83] to-[#fcc11a]", btn: "bg-gold text-ink/70 border-gold-deep",
+  silver: {
+     prizeColor: "#1e1e1e",
+    header: "from-[#ededeb] to-white", border: "border-stone/25", bg: "bg-[url('/images/silver.png')] bg-cover bg-center",
+    prizeBox: "bg-white/70 border-stone/40", bar: "from-[#bbb8b6] to-[#999999]",
+    btn: "bg-[#97918b] text-white border-black/40",
   },
-  {
-    tier: "Bronze Tier · daily", title: "Test World Cup", prize: "₦57,600", entry: "₦500", players: "0/200 players", pct: 0,
-    prizeColor: "#d9961b", cardBg: "bg-[url('/images/bronze.png')] bg-cover bg-center", border: "border-[#d9961b]/25", prizeBox: "bg-[#d9961b]/[0.07] border-[#d9961b]/40", bar: "from-[#f0bb5a] to-[#d9961b]", btn: "bg-[#d9961b] text-white border-[#b47445]",
+  diamond: {
+ prizeColor: "#0e9f37",
+    header: "from-[#fdf3e1] to-white", border: "border-[#0e9f37]/25", bg: "bg-[url('/images/diamond.png')] bg-cover bg-center",
+    prizeBox: "bg-[#0e9f37]/[0.07] border-[#0e9f37]/40", bar: "from-[#6BD789] to-[#0e9f37]",
+    btn: "bg-[#0e9f37] text-white border-[#157831]",
   },
-  {
-    tier: "Diamond Tier · league", title: "Diamond League Season 1", prize: "₦100,000", entry: "₦5,000", players: "6/100 players", pct: 50,
-    prizeColor: "#0e9f37", cardBg: "bg-[url('/images/diamond.png')] bg-cover bg-center", border: "border-win/25", prizeBox: "bg-win/[0.07] border-win/40", bar: "from-[#6bd789] to-[#0e9f37]", btn: "bg-win text-white border-[#157831]",
+  bronze: {
+     prizeColor: "#d9961b",
+    header: "from-[#fdf3e1] to-white", border: "border-[#d9961b]/25", bg: "bg-[url('/images/bronze.png')] bg-cover bg-center",
+    prizeBox: "bg-[#d9961b]/[0.07] border-[#d9961b]/40", bar: "from-[#f0bb5a] to-[#d9961b]",
+    btn: "bg-[#d9961b] text-white border-[#b47445]",
   },
-];
+  gold: {
+  prizeColor: "#cf9b09",
+    header: "from-[#fff3d6] to-white", border: "border-gold/25", bg: "bg-[url('/images/gold.png')] bg-cover bg-center",
+    prizeBox: "bg-[#fff6de] border-gold/40", bar: "from-[#ffdf83] to-[#fcc11a]",
+    btn: "bg-gold text-ink/70 border-gold-deep",
+} 
+}
 
-function GameCard({ c, onJoin }: { c: Game; onJoin: () => void }) {
+
+function CompetitionCard({ c }: { c: Competition }) {
   return (
-    <div className={`flex flex-col gap-3 rounded-[20px] border p-5 ${c.border} ${c.cardBg}`}>
-      <div className="flex items-center justify-between">
-        <span className="font-display text-[12px] font-medium uppercase tracking-wide text-black/60">
-          {c.tier}
-        </span>
-        <span className="flex items-center gap-1 font-display text-[12px] font-semibold text-black/60">
-          <ClockIcon className="h-3.5 w-3.5" />
-          Started
-        </span>
-      </div>
-      <h3 className="min-h-[34px] font-display text-[14px] font-bold leading-[17px] text-black/80">
-        {c.title}
-      </h3>
-      <div className={`flex flex-col gap-1 rounded-[12px] border p-3 ${c.prizeBox}`}>
-        <span className="font-display text-[12px] font-normal text-black/60">Prize Pool</span>
-        <div className="flex items-end justify-between">
-          <span className="font-display text-[16px] font-bold leading-5" style={{ color: c.prizeColor }}>
-            {c.prize}
+    <div className={`flex flex-1 flex-col overflow-hidden rounded-[28px] bg-white border lg:rounded-[20px] ${competitionCardOptions[c.tier as keyof typeof competitionCardOptions]?.border}`}>
+      <div className={`flex flex-col `}>
+        <div className={`flex items-center justify-between  p-[15px] pt-[80px] ${competitionCardOptions[c.tier as keyof typeof competitionCardOptions]?.bg}`}>
+          <span className={`font-display text-[12px] font-medium uppercase rounded-full tracking-wide text-black/60 py-[2px] px-[10px] ${competitionCardOptions[c.tier as keyof typeof competitionCardOptions]?.btn}`}>
+            {c.tier}
           </span>
-          <span className="font-display text-[12px] font-semibold text-black/60">Entry: {c.entry}</span>
+          <span className="flex items-center gap-1 font-display text-[12px] font-semibold text-black/60">
+            <ClockIcon className="h-3.5 w-3.5" />
+            Started
+          </span>
+        </div>
+        <h3 className="font-display text-[18px] font-bold leading-[22px] text-black/80 mx-[15px] py-[11px] lg:text-[14px] lg:leading-[17px]">{c.name}</h3>
+        <div className={`flex flex-col gap-0.5 rounded-[12px] border mx-[15px] mb-[27px] p-3 ${competitionCardOptions[c.tier as keyof typeof competitionCardOptions]?.prizeBox}`}>
+          <span className="font-display text-[12px] font-normal text-black/60">Prize Pool</span>
+          <div className="flex items-end justify-between">
+            <span className="font-display text-[16px] font-bold leading-5" style={{ color: competitionCardOptions[c.tier as keyof typeof competitionCardOptions]?.prizeColor }}>
+              {formatCurrency(c.prize_pool)}
+            </span>
+            <span className="font-display text-[12px] font-semibold text-black/60">Entry: {formatCurrency(c.entry_fee)}</span>
+          </div>
         </div>
       </div>
-      <div className="flex items-center justify-between">
-        <span className="flex items-center gap-1 font-display text-[10px] font-semibold text-black/60">
-          <UsersIcon className="h-3.5 w-3.5 text-stone" />
-          {c.players}
-        </span>
-        <span className="font-display text-[10px] font-semibold text-black/60">{c.pct}%</span>
+
+      <div className={`flex flex-col gap-2.5 px-[15px] pb-[15px]`}>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-1 font-display text-[10px] font-semibold text-black/60">
+              <UsersIcon className="h-3.5 w-3.5 text-stone" />
+              {c.entry_count}/{c.max_players} players
+            </span>
+            <span className="font-display text-[10px] font-semibold text-black/60">{`${Math.round((c.entry_count / c.max_players) * 100)}%`}</span>
+          </div>
+          <div className="h-[11px] w-full overflow-hidden rounded-full bg-[#f1f1ef]">
+            <div className={`h-full rounded-full bg-gradient-to-r ${competitionCardOptions[c.tier as keyof typeof competitionCardOptions]?.bar}`}
+            style={{ width: `${Math.round((c.entry_count / c.max_players) * 100)}%` }}
+             />
+          </div>
+        </div>
+        <button className={`mt-1 rounded-full border py-2 font-display text-[16px] font-semibold ${competitionCardOptions[c.tier as keyof typeof competitionCardOptions]?.btn}`}>
+          Join Competition
+        </button>
       </div>
-      <div className="h-[11px] w-full overflow-hidden rounded-full bg-[#f1f1ef]">
-        <div className={`h-full rounded-full bg-gradient-to-r ${c.bar}`} style={{ width: `${c.pct}%` }} />
-      </div>
-      <button
-        onClick={onJoin}
-        className={`mt-1 rounded-full border py-2 font-display text-[16px] font-semibold ${c.btn}`}
-      >
-        Join Competition
-      </button>
     </div>
   );
 }
@@ -292,7 +324,7 @@ function JoinModal({
 /* ------------------------------------------------------------------ */
 /*  Page                                                              */
 /* ------------------------------------------------------------------ */
-export default function ComputePage() {
+export default function CompetePage() {
   useSetPageHeader({
     title: "Compete",
     subtitle: "Choose your competition and play to win",
@@ -302,24 +334,28 @@ export default function ComputePage() {
   const [active, setActive] = useState("All");
   const [joinGame, setJoinGame] = useState<Game | null>(null);
 
-  // Pre-open a join confirmation via ?join=<slug> (deep-link / preview).
-  useEffect(() => {
-    const j = new URLSearchParams(window.location.search).get("join");
-    if (j) {
-      const g = games.find((g) => slugify(g.title) === j);
-      if (g) setJoinGame(g);
-    }
-  }, []);
+  const params: ListCompetitionsParams = active === "All" ? {} : { type: TAB_TYPE_MAP[active] };
+  const { data, isLoading } = useGetCompetitonsQuery(params);
+  
 
-  // TODO: drive from the endpoint response once tab filtering is wired up.
-  // For now, simulate an empty result on the "Battles" tab.
-  const hasCompetitions = active !== "Battles";
+
+  // Pre-open a join confirmation via ?join=<slug> (deep-link / preview).
+  // useEffect(() => {
+  //   const j = new URLSearchParams(window.location.search).get("join");
+  //   if (j) {
+  //     const g = games.find((g) => slugify(g.title) === j);
+  //     if (g) setJoinGame(g);
+  //   }
+  // }, []);
+
+  const hasCompetitions = (data?.competitions?.length ?? 0) > 0;
+ const competitions = data?.competitions
 
   return (
     <div className="mx-auto flex w-full flex-col gap-7">
       <Tabs active={active} onChange={setActive} />
 
-      {hasCompetitions ? (
+      {isLoading ? <Loader /> : hasCompetitions ? (
         <>
           <section className="flex flex-col gap-4">
             <SectionTitle>Games you joined</SectionTitle>
@@ -337,8 +373,8 @@ export default function ComputePage() {
           <section className="flex flex-col gap-4">
             <SectionTitle>Other Games</SectionTitle>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {games.map((c) => (
-                <GameCard key={c.title} c={c} onJoin={() => setJoinGame(c)} />
+              {competitions?.map((c) => (
+                <CompetitionCard key={c.id} c={c}  />
               ))}
             </div>
           </section>

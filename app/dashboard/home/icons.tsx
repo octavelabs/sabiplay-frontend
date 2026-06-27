@@ -88,11 +88,10 @@ export const BoltIcon = (p: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 export const TrophyIcon = (p: SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" {...p}>
-    <path d="M7 4h10v3a5 5 0 0 1-10 0z" />
-    <path d="M5 4H3v2a3 3 0 0 0 3 3M19 4h2v2a3 3 0 0 1-3 3" stroke="currentColor" strokeWidth="1.6" fill="none" />
-    <path d="M12 12v3M9 20h6M10 20l.5-3h3l.5 3" stroke="currentColor" strokeWidth="1.6" fill="none" />
-  </svg>
+  <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.15039 4.83301H20.9201C20.9201 4.83301 19.8567 20.8519 14.5352 20.8519C11.9373 20.8519 10.3532 17.0287 9.4131 13.1186C8.42952 9.02351 8.15039 4.83301 8.15039 4.83301Z" stroke="#0E9F37" strokeWidth="1.8125" strokeLinecap="round" strokeLinejoin="round"/>
+<path d="M20.92 4.83335C20.92 4.83335 22.0329 3.64556 22.9584 3.62501C24.7709 3.58393 25.1057 4.83335 25.1057 4.83335C25.4609 5.57043 25.7449 7.48443 24.0423 9.25222C22.3398 11.02 20.433 12.5667 19.6573 13.1189M8.15032 4.83335C8.15032 4.83335 6.99032 3.63226 6.04178 3.62501C4.22928 3.61051 3.89457 4.83335 3.89457 4.83335C3.53932 5.57043 3.25536 7.48443 4.9579 9.25222C6.33543 10.66 7.8254 11.9532 9.41303 13.1189M10.2794 24.1667C10.2794 21.9566 14.5352 20.8522 14.5352 20.8522C14.5352 20.8522 18.7921 21.9566 18.7921 24.1667H10.2794Z" stroke="#0E9F37" strokeWidth="1.8125" strokeLinecap="round" strokeLinejoin="round"/>
+</svg>
 );
 export const TargetIcon = (p: SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} {...p}>
@@ -101,3 +100,6 @@ export const TargetIcon = (p: SVGProps<SVGSVGElement>) => (
     <circle cx="12" cy="12" r="1.5" fill="currentColor" />
   </svg>
 );
+
+
+

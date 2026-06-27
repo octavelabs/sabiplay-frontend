@@ -49,9 +49,9 @@ export function AuthLayout({ children }: { children: ReactNode }) {
         </aside>
 
         {/* right form column */}
-        <div className="flex min-w-0 flex-1 flex-col overflow-auto">
+        <div className="flex min-w-0 flex-1 flex-col overflow-auto scrollbar-hide">
           <main className="flex flex-1 items-center justify-center px-5 py-10 ">
-            <div className="w-full max-w-[403px]">{children}</div>
+            <div className="w-full max-w-[430px]">{children}</div>
           </main>
           <footer className="pb-2 pt-4 text-center font-display text-[16px] font-medium leading-6 text-ink/50">
             © 2025 SabiPlay · Made in Nigeria 🇳🇬
