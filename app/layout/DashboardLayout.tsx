@@ -19,7 +19,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
             <div
               className="
                 absolute inset-0
-                bg-[url('/images/section-bg.png')]
+                bg-[url('/images/section-bg1.png')]
                 bg-cover bg-[top_2%]
                 rotate-180
               "

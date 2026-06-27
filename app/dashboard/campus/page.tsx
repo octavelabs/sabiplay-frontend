@@ -13,7 +13,7 @@ type SVGProps = React.SVGProps<SVGSVGElement>;
 /* ------------------------------------------------------------------ */
 /*  Icons                                                              */
 /* ------------------------------------------------------------------ */
-const SearchIcon = (p: SVGProps) => (
+export const SearchIcon = (p: SVGProps) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" {...p}>
     <circle cx="11" cy="11" r="8" />
     <path d="m21 21-4.35-4.35" />

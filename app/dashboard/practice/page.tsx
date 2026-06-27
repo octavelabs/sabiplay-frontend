@@ -1,7 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useSetPageHeader } from "../../context/PageHeaderContext";
+import { useGetPracticeQuestionsQuery } from "@/app/hooks/practice/practiceQuery";
+import { ListPracticeQuestionsParams, PracticeQuestion } from "@/app/lib/types/practice";
+import { Button } from "@/components/Button";
+import { ClockIcon, FlashCardIcon, MockExamIcon, TickIcon, WrongIcon } from "./icons";
 
 /* ------------------------------------------------------------------ */
 /*  Types & constants                                                  */
@@ -22,28 +26,14 @@ const CATEGORIES = [
 
 const DIFFICULTIES: Difficulty[] = ["Easy", "Medium", "Hard"];
 
-const SAMPLE_QUESTION = {
-  category: "Entertainment",
-  difficulty: "Novice",
-  text: "Which Nigerian film industry is nicknamed 'Nollywood'?",
-  options: [
-    "Lagos Film Industry",
-    "Nigeria Movie Industry",
-    "Abuja Film Hub",
-    "All of the above",
-  ],
-  correctIndex: 1,
-  explanation:
-    "Nollywood refers to the Nigeria film industry, which is the second largest in the world by volume of production.",
-};
 
 /* ------------------------------------------------------------------ */
 /*  Setup screen                                                       */
 /* ------------------------------------------------------------------ */
-const MODES: { key: Mode; label: string; desc: string }[] = [
-  { key: "timed", label: "Timed", desc: "Test yourself on the clock" },
-  { key: "flashcard", label: "Flashcard", desc: "Learn at your pace" },
-  { key: "mock", label: "Mock Exam", desc: "Simulate a real exam" },
+const MODES: { key: Mode; label: string; desc: string; icon: ReactNode }[] = [
+  { key: "timed", label: "Timed", desc: "Test yourself on the clock", icon: <ClockIcon /> },
+  { key: "flashcard", label: "Flashcard", desc: "Learn at your pace", icon: <FlashCardIcon /> },
+  { key: "mock", label: "Mock Exam", desc: "Simulate a real exam", icon: <MockExamIcon /> },
 ];
 
 function ModeIcon() {
@@ -56,8 +46,10 @@ function ModeIcon() {
 
 function SetupScreen({
   onStart,
+  isFetching,
 }: {
   onStart: (cat: string, mode: Mode, diff: Difficulty) => void;
+  isFetching?: boolean;
 }) {
   const [cat, setCat] = useState("Sports");
   const [mode, setMode] = useState<Mode>("timed");
@@ -66,9 +58,9 @@ function SetupScreen({
 
   return (
     <div className="flex min-h-full w-full justify-center py-6">
-      <div className="flex w-full  flex-col gap-6 rounded-[20px] bg-white p-6 shadow-sm">
+      <div className="flex w-full  flex-col gap-6  shadow-sm">
         {/* Category */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 bg-[#F5F4F1] p-6 rounded-[20px]">
           <span className="font-display text-[13px] font-semibold text-black/60">
             Category
           </span>
@@ -80,7 +72,7 @@ function SetupScreen({
                 className={`rounded-full px-3 py-1.5 font-display text-[13px] font-medium transition-colors ${
                   cat === c
                     ? "border border-gold-deep/50 bg-gold text-[#615e53]"
-                    : "bg-gold/[0.12] text-ink/70 hover:bg-gold/20"
+                    : "bg-[#E7E6E2] text-ink/70 hover:bg-gold/20"
                 }`}
               >
                 {c}
@@ -90,7 +82,7 @@ function SetupScreen({
         </div>
 
         {/* Mode */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 p-6 bg-[#F5F4F1] rounded-[20px]">
           <span className="font-display text-[13px] font-semibold text-black/60">
             Mode
           </span>
@@ -106,7 +98,10 @@ function SetupScreen({
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <ModeIcon />
+                  <div className="flex justify-center items-center h-10 w-10 bg-[#F6EED9] rounded-full">
+ {m.icon}
+                  </div>
+                 
                   <div className="flex flex-col gap-0.5">
                     <span className="font-display text-[14px] font-semibold text-black/80">
                       {m.label}
@@ -116,31 +111,21 @@ function SetupScreen({
                     </span>
                   </div>
                 </div>
-                <span
-                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
-                    mode === m.key
-                      ? "border-gold bg-gold"
-                      : "border-black/20 bg-white"
-                  }`}
-                >
-                  {mode === m.key && (
-                    <span className="h-2 w-2 rounded-full bg-white" />
-                  )}
-                </span>
+               
               </button>
             ))}
           </div>
         </div>
 
         {/* Difficulty */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 bg-[#F5F4F1] rounded-[20px] p-6">
           <span className="font-display text-[13px] font-semibold text-black/60">
             Difficulty
           </span>
           <div className="relative">
             <button
               onClick={() => setDiffOpen((o) => !o)}
-              className="flex w-full items-center justify-between rounded-[12px] border border-black/[0.10] bg-[#f8f8f5] px-4 py-3 font-display text-[14px] font-medium text-black/80"
+              className="flex w-full items-center justify-between rounded-[12px] border border-[#E9AD0191] bg-[#FCC11A1C] px-4 py-3 font-display text-[14px] font-medium text-black/80"
             >
               {diff}
               <ChevronDown />
@@ -166,13 +151,9 @@ function SetupScreen({
           </div>
         </div>
 
-        {/* CTA */}
-        <button
-          onClick={() => onStart(cat, mode, diff)}
-          className="mt-1 w-full rounded-full border border-gold-deep/60 bg-gold py-3 font-display text-[16px] font-semibold text-[#615e53]"
-        >
-          Start Practice
-        </button>
+         <Button loading={isFetching} variant="gold" className="w-full" type='button' onClick={() => onStart(cat, mode, diff)}>
+                      Start Practice
+                    </Button>
       </div>
     </div>
   );
@@ -182,21 +163,23 @@ function SetupScreen({
 /*  Question screen                                                    */
 /* ------------------------------------------------------------------ */
 function QuestionScreen({
+  question,
   qIndex,
   total,
   onAnswer,
 }: {
+  question: PracticeQuestion;
   qIndex: number;
   total: number;
   onAnswer: (idx: number) => void;
 }) {
-  const q = SAMPLE_QUESTION;
+  const options = [question.option_a, question.option_b, question.option_c, question.option_d];
   const letters = ["A", "B", "C", "D"];
 
   return (
     <div className="flex min-h-full w-full flex-col gap-5">
       {/* progress bar */}
-      <div className="h-1 w-full overflow-hidden rounded-full bg-black/[0.06]">
+      <div className="h-[11px] w-full overflow-hidden rounded-full bg-black/[0.06]">
         <div
           className="h-full rounded-full bg-gold"
           style={{ width: `${((qIndex + 1) / total) * 100}%` }}
@@ -204,29 +187,32 @@ function QuestionScreen({
       </div>
 
       {/* tags */}
-      <div className="flex items-center gap-2">
-        <span className="rounded-full border border-gold-deep/50 bg-gold px-3 py-1 font-display text-[12px] font-semibold text-[#615e53]">
-          {q.category}
+       <div className="flex flex-col  gap-2 border border-[#FDD053] bg-[#FEEFC64A] rounded-[16px] py-6 px-4">
+        <div>
+        <span className="rounded-full bg-[#FCC11A1F] px-3 py-1 font-display text-[12px] font-semibold text-[#D1701CBD] capitalize">
+          {question.category}
         </span>
-        <span className="rounded-full bg-black/[0.07] px-3 py-1 font-display text-[12px] font-semibold text-black/60">
-          {q.difficulty}
+        <span className="rounded-full bg-[#D1701CBD] px-3 py-1 font-display text-[12px] font-semibold text-white capitalize">
+          {question.difficulty}
         </span>
+        </div>
+        <p className="font-display text-[18px] font-semibold leading-[26px] text-[#656361]">
+          {question.question_text}
+        </p>
       </div>
 
       {/* question card */}
       <div className="flex flex-col gap-5 rounded-[20px] bg-white p-6 shadow-sm">
-        <p className="font-display text-[18px] font-semibold leading-[26px] text-black/80">
-          {q.text}
-        </p>
+      
         <div className="flex flex-col gap-3">
-          {q.options.map((opt, i) => (
+          {options.map((opt, i) => (
             <button
               key={i}
               onClick={() => onAnswer(i)}
-              className="flex items-center gap-3 rounded-[14px] border border-black/[0.08] bg-[#f8f8f5] px-4 py-3 text-left transition-colors hover:border-gold/40 hover:bg-gold/[0.06]"
+              className="flex items-center gap-3 rounded-full bg-[#f8f8f5] px-4 py-3 text-left transition-colors hover:border-gold/40 hover:bg-gold/[0.06]"
             >
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-black/[0.06] font-display text-[13px] font-bold text-black/60">
-                {letters[i]}
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full  font-display text-[13px] font-bold text-black/60">
+                {`${letters[i]}.`}
               </span>
               <span className="font-display text-[14px] font-medium text-black/80">
                 {opt}
@@ -243,47 +229,52 @@ function QuestionScreen({
 /*  Revealed screen                                                    */
 /* ------------------------------------------------------------------ */
 function RevealedScreen({
+  question,
   selectedIdx,
   onNext,
 }: {
+  question: PracticeQuestion;
   selectedIdx: number;
   onNext: () => void;
 }) {
-  const q = SAMPLE_QUESTION;
+  const options = [question.option_a, question.option_b, question.option_c, question.option_d];
   const letters = ["A", "B", "C", "D"];
+  const correctIdx = ["a", "b", "c", "d"].indexOf(question.correct_option);
 
   return (
     <div className="flex min-h-full w-full flex-col gap-5">
-      {/* progress bar (full for this question) */}
-      <div className="h-1 w-full overflow-hidden rounded-full bg-black/[0.06]">
+      {/* progress bar */}
+      <div className="h-[11px] w-full overflow-hidden rounded-full bg-black/[0.06]">
         <div className="h-full rounded-full bg-gold" style={{ width: "20%" }} />
       </div>
 
       {/* tags */}
-      <div className="flex items-center gap-2">
-        <span className="rounded-full border border-gold-deep/50 bg-gold px-3 py-1 font-display text-[12px] font-semibold text-[#615e53]">
-          {q.category}
+      <div className="flex flex-col  gap-2 border border-[#FDD053] bg-[#FEEFC64A] rounded-[16px] py-6 px-4">
+        <div>
+        <span className="rounded-full bg-[#FCC11A1F] px-3 py-1 font-display text-[12px] font-semibold text-[#D1701CBD] capitalize">
+          {question.category}
         </span>
-        <span className="rounded-full bg-black/[0.07] px-3 py-1 font-display text-[12px] font-semibold text-black/60">
-          {q.difficulty}
+        <span className="rounded-full bg-[#D1701CBD] px-3 py-1 font-display text-[12px] font-semibold text-white capitalize">
+          {question.difficulty}
         </span>
+        </div>
+        <p className="font-display text-[18px] font-semibold leading-[26px] text-[#656361]">
+          {question.question_text}
+        </p>
       </div>
 
       {/* question card */}
       <div className="flex flex-col gap-5 rounded-[20px] bg-white p-6 shadow-sm">
-        <p className="font-display text-[18px] font-semibold leading-[26px] text-black/80">
-          {q.text}
-        </p>
+        
 
         <div className="flex flex-col gap-3">
-          {q.options.map((opt, i) => {
-            const isCorrect = i === q.correctIndex;
+          {options.map((opt, i) => {
+            const isCorrect = i === correctIdx;
             const isWrong = i === selectedIdx && !isCorrect;
-
             return (
               <div
                 key={i}
-                className={`flex items-center gap-3 rounded-[14px] border px-4 py-3 ${
+                className={`flex items-center gap-3 rounded-full border px-4 py-3 ${
                   isCorrect
                     ? "border-win/40 bg-win/[0.08]"
                     : isWrong
@@ -293,22 +284,14 @@ function RevealedScreen({
               >
                 <span
                   className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-display text-[13px] font-bold ${
-                    isCorrect
-                      ? "bg-win text-white"
-                      : isWrong
-                      ? "bg-loss/20 text-loss"
-                      : "bg-black/[0.06] text-black/60"
+                    isCorrect ? "text-win" : isWrong ? " text-loss" : " text-[#656361]"
                   }`}
                 >
-                  {letters[i]}
+                  {`${letters[i]}.`}
                 </span>
                 <span
                   className={`font-display text-[14px] font-medium ${
-                    isCorrect
-                      ? "text-win"
-                      : isWrong
-                      ? "text-loss"
-                      : "text-black/60"
+                    isCorrect ? "text-win" : isWrong ? "text-loss" : "text-[#656361]"
                   }`}
                 >
                   {opt}
@@ -324,7 +307,7 @@ function RevealedScreen({
             Explanation
           </span>
           <p className="font-display text-[14px] font-normal leading-[21px] text-black/70">
-            {q.explanation}
+            {question.explanation}
           </p>
         </div>
 
@@ -342,63 +325,87 @@ function RevealedScreen({
 /* ------------------------------------------------------------------ */
 /*  Session complete screen                                            */
 /* ------------------------------------------------------------------ */
-const SESSION_STATS = [
-  { count: 1, label: "Correct", color: "text-win", dot: "bg-win" },
-  { count: 4, label: "Wrong", color: "text-loss", dot: "bg-loss" },
-  { count: 10, label: "Skipped", color: "text-burnt", dot: "bg-burnt" },
-];
+function CompleteScreen({
+  correct,
+  wrong,
+  total,
+  onRestart,
+  onSettings,
+}: {
+  correct: number;
+  wrong: number;
+  total: number;
+  onRestart: () => void;
+  onSettings: () => void;
+}) {
+  const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+  const xp = correct * 10;
 
-function CompleteScreen({ onRestart, onSettings }: { onRestart: () => void; onSettings: () => void }) {
+
+
+ 
+
+
   return (
-    <div className="flex min-h-full w-full items-center justify-center py-10">
-      <div className="flex w-full max-w-[400px] flex-col items-center gap-8">
-        {/* accuracy badge */}
-        <div className="relative flex h-[160px] w-[160px] items-center justify-center rounded-full border-[6px] border-gold bg-gradient-to-b from-[#ffd23f] to-[#f5a623] shadow-[0_8px_32px_rgba(245,166,35,0.4)]">
-          <div className="flex flex-col items-center">
-            <span className="font-display text-[40px] font-bold leading-none text-white">
-              50%
-            </span>
-            <span className="font-display text-[13px] font-medium text-white/80">
-              Accuracy
-            </span>
+    <div className="flex w-[50%] flex-col gap-4 py-6">
+      {/* accuracy card */}
+      <div className="flex flex-col items-center gap-3 rounded-[20px] bg-[#F5F4F1] py-8 px-6">
+        {/* badge */}
+        <img src='/images/sessionComplete.svg' className=""/>
+        <span className="font-display text-[48px] font-bold leading-none text-gold">
+          {accuracy}%
+        </span>
+        <span className="font-display text-[14px] font-medium text-black/50">Accuracy</span>
+      </div>
+
+      {/* stat boxes */}
+      <div className="grid grid-cols-3 gap-3">
+        {/* correct */}
+        <div className="flex flex-col justify-center items-center gap-2 rounded-[16px] bg-[#F5F4F1] py-4 px-2">
+         
+          <div className="flex gap-2 items-center">
+            <TickIcon />
+                      <span className="font-display leading-[31.91px] text-[35.46px] font-bold text-black/80">{correct}</span>
           </div>
-          {/* medal ribbon */}
-          <div className="absolute -bottom-3 flex h-7 w-7 items-center justify-center rounded-full bg-[#cd3c10] font-display text-[14px] font-bold text-white shadow">
-            7
-          </div>
+          <span className="font-display text-sm font-medium text-black/50">Correct</span>
         </div>
 
-        {/* stats */}
-        <div className="flex w-full items-center justify-center gap-6">
-          {SESSION_STATS.map((s) => (
-            <div key={s.label} className="flex items-center gap-1.5">
-              <span className={`h-2.5 w-2.5 rounded-full ${s.dot}`} />
-              <span className={`font-display text-[14px] font-bold ${s.color}`}>
-                {s.count}
-              </span>
-              <span className="font-display text-[13px] font-normal text-black/50">
-                {s.label}
-              </span>
-            </div>
-          ))}
+        {/* wrong */}
+        <div className="flex flex-col justify-center items-center gap-2 rounded-[16px] bg-[#F5F4F1] py-4 px-[55px]">
+        
+           <div className="flex gap-2 items-center">
+            <WrongIcon />
+                      <span className="font-display leading-[31.91px] text-[35.46px] font-bold text-black/80">{wrong}</span>
+          </div>
+          <span className="font-display text-sm font-medium text-black/50">Wrong</span>
         </div>
 
-        {/* actions */}
-        <div className="flex w-full gap-3">
-          <button
-            onClick={onRestart}
-            className="flex flex-1 items-center justify-center gap-2 rounded-full border border-gold-deep/60 bg-gold py-3 font-display text-[16px] font-semibold text-[#615e53]"
-          >
-            <PlayIcon />
-            Play Again
-          </button>
-          <button
-            onClick={onSettings}
-            className="flex-1 rounded-full border border-black/[0.12] bg-white py-3 font-display text-[16px] font-semibold text-black/70 hover:bg-black/[0.03]"
-          >
-            Change Settings
-          </button>
+        {/* xp */}
+        <div className="flex flex-col justify-center items-center gap-2 rounded-[16px] bg-[#F5F4F1] py-4 px-[39px]">
+    
+          <span className="font-display leading-[31.91px] text-[35.46px] font-bold text-[#E9AD01]">+{xp}</span>
+          <span className="font-display text-sm font-medium text-black/50">XP Earned</span>
         </div>
+      </div>
+
+      {/* actions */}
+      <div className="flex w-full gap-3 pt-2">
+        <button
+          onClick={onRestart}
+          className="flex flex-1 items-center justify-center bg-gold border border-gold-deep gap-2 rounded-full  py-3.5 font-display text-[16px] font-semibold text-[#1E1E1E]"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+            <path d="M3 3v5h5" />
+          </svg>
+          Play Again
+        </button>
+        <button
+          onClick={onSettings}
+          className="flex-1 rounded-full bg-gold/[0.15] py-3.5 font-display text-[16px] font-semibold text-gold-deep"
+        >
+          Change Settings
+        </button>
       </div>
     </div>
   );
@@ -415,13 +422,6 @@ function ChevronDown() {
   );
 }
 
-function PlayIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-      <path d="M5 3l14 9-14 9V3z" />
-    </svg>
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /*  Page root                                                          */
@@ -430,31 +430,56 @@ export default function PracticePage() {
   const [phase, setPhase] = useState<Phase>("setup");
   const [qIndex, setQIndex] = useState(0);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
-  const TOTAL = 5;
+  const [questions, setQuestions] = useState<PracticeQuestion[]>([]);
+  const [startParams, setStartParams] = useState<ListPracticeQuestionsParams | null>(null);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [wrongCount, setWrongCount] = useState(0);
+
+  const { data, isFetching } = useGetPracticeQuestionsQuery(
+    startParams ?? {},
+    { enabled: !!startParams },
+  );
+
+  useEffect(() => {
+    if (data?.questions && data.questions.length > 0) {
+      setQuestions(data.questions);
+      setQIndex(0);
+      setSelectedIdx(null);
+      setPhase("question");
+      setStartParams(null);
+    }
+  }, [data]);
 
   /* Header changes per phase */
   useSetPageHeader(
     phase === "setup"
-      ? { title: "Practice Mode", subtitle: "Go ahead — learn it! and sharpen your knowledge" }
+      ? { title: "Practice Mode", subtitle: "No stakes — earn XP and sharpen your knowledge" }
       : phase === "complete"
       ? { title: "Session Complete", subtitle: "Great effort! Review your performance below" }
-      : { title: "Practice", subtitle: "Answer each question to the best of your ability" }
+      : { title: "Practice", subtitle: "" }
   );
 
-  function handleStart(_cat: string, _mode: Mode, _diff: Difficulty) {
-    setQIndex(0);
-    setSelectedIdx(null);
-    setPhase("question");
+  function handleStart(cat: string, _mode: Mode, diff: Difficulty) {
+    setStartParams({
+      category: cat,
+      difficulty: diff.toLowerCase() as ListPracticeQuestionsParams["difficulty"],
+    });
   }
 
   function handleAnswer(idx: number) {
     setSelectedIdx(idx);
     setPhase("revealed");
+    const correctIdx = ["a", "b", "c", "d"].indexOf(questions[qIndex].correct_option);
+    if (idx === correctIdx) {
+      setCorrectCount((c) => c + 1);
+    } else {
+      setWrongCount((w) => w + 1);
+    }
   }
 
   function handleNext() {
     const next = qIndex + 1;
-    if (next >= TOTAL) {
+    if (next >= questions.length) {
       setPhase("complete");
     } else {
       setQIndex(next);
@@ -463,21 +488,29 @@ export default function PracticePage() {
     }
   }
 
+  const currentQuestion = questions[qIndex];
+
   return (
-    <div className="mx-auto flex w-full  flex-col gap-0 pb-10">
-      {phase === "setup" && <SetupScreen onStart={handleStart} />}
-      {phase === "question" && (
-        <QuestionScreen qIndex={qIndex} total={TOTAL} onAnswer={handleAnswer} />
+    <div className="mx-auto flex w-full flex-col gap-0 pb-10">
+      {phase === "setup" && <SetupScreen onStart={handleStart} isFetching={isFetching} />}
+      {phase === "question" && currentQuestion && (
+        <QuestionScreen question={currentQuestion} qIndex={qIndex} total={questions.length} onAnswer={handleAnswer} />
       )}
-      {phase === "revealed" && selectedIdx !== null && (
-        <RevealedScreen selectedIdx={selectedIdx} onNext={handleNext} />
+      {phase === "revealed" && currentQuestion && selectedIdx !== null && (
+        <RevealedScreen question={currentQuestion} selectedIdx={selectedIdx} onNext={handleNext} />
       )}
       {phase === "complete" && (
         <CompleteScreen
+          correct={correctCount}
+          wrong={wrongCount}
+          total={questions.length}
           onRestart={() => {
             setPhase("setup");
             setQIndex(0);
             setSelectedIdx(null);
+            setQuestions([]);
+            setCorrectCount(0);
+            setWrongCount(0);
           }}
           onSettings={() => setPhase("setup")}
         />

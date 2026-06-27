@@ -34,8 +34,8 @@ export default function DashboardHeader({
   button,
   onButtonClick,
 }: DashboardHeaderProps) {
-  const user = useUser();
-  const firstName = user.name.split(" ")[0];
+  const { user } = useUser();
+  const firstName = user?.user.username ?? "";
 
   return (
     <header className="flex items-center justify-between px-4 pt-6 lg:px-[40px] lg:pt-[40px]">

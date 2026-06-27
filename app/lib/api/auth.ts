@@ -1,6 +1,6 @@
 
 
-import { ForgotPasswordRequest, InviteRequest, LoginRequest, LoginResponse, SignupRequest, SignupResponse } from "../types/auth";
+import { ForgotPasswordRequest, InviteRequest, LoginRequest, LoginResponse, ResetPasswordRequest, SignupRequest, SignupResponse, VerifyOTPRequest } from "../types/auth";
 import { ApiResponse, SabiResponse } from "../types/global";
 import { api } from "./client";
 
@@ -12,6 +12,7 @@ export async function login(payload: LoginRequest) {
 export function signup(payload: SignupRequest) {
   return api.post<SignupResponse>("/auth/register", payload);
 }
+
 export function reset(payload: LoginRequest) {
   return api.post<any>("/auth/reset-password", payload);
 }
@@ -20,6 +21,14 @@ export function invite(payload: InviteRequest) {
 }
 export function forgotPassword(payload: ForgotPasswordRequest) {
   return api.post<any>("/auth/forgot-password", payload);
+}
+
+export function verifyOTP(payload: VerifyOTPRequest) {
+  return api.post<any>("/auth/verify-otp", payload);
+}
+
+export function resetPassword(payload: ResetPasswordRequest) {
+  return api.post<any>("/auth/reset-password", payload);
 }
 export function refreshAccessToken() {
   return api.post<LoginResponse>("/auth/refresh-token");

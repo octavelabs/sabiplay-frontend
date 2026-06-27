@@ -1,41 +1,25 @@
 "use client";
 
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
+import { GetMyProfileResponse } from "../lib/types/home";
 
-export type User = {
-  name: string;
-  username: string;
-  email: string;
-  avatar: string;
-  /** wallet balance in naira */
-  balance: number;
-  division: string;
-  rank: number;
-  xp: number;
+type UserContextType = {
+  user: GetMyProfileResponse | null;
+  setUser: (user: GetMyProfileResponse) => void;
 };
 
-/** Placeholder user until a real auth/session source is wired in. */
-const DEFAULT_USER: User = {
-  name: "George Omoh",
-  username: "georgekyrian123",
-  email: "george@example.com",
-  avatar: "/images/avatar.png",
-  balance: 24500,
-  division: "Gold",
-  rank: 4,
-  xp: 1988,
-};
+const UserContext = createContext<UserContextType>({
+  user: null,
+  setUser: () => {},
+});
 
-const UserContext = createContext<User>(DEFAULT_USER);
-
-export function UserProvider({
-  children,
-  user = DEFAULT_USER,
-}: {
-  children: ReactNode;
-  user?: User;
-}) {
-  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+export function UserProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<GetMyProfileResponse | null>(null);
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      {children}
+    </UserContext.Provider>
+  );
 }
 
 export function useUser() {
