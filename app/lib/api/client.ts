@@ -19,8 +19,18 @@ type RequestConfig = {
   signal?: AbortSignal;
 };
 
+const PUBLIC_AUTH_PATHS = [
+  "/auth/login",
+  "/auth/register",
+  "/auth/reset-password",
+  "/auth/accept-invite",
+  "/auth/forgot-password",
+  "/auth/verify-otp",
+  "/auth/refresh-token",
+];
+
 function isAuthEndpoint(path: string) {
-  return path.startsWith("/auth");
+  return PUBLIC_AUTH_PATHS.some((p) => path.startsWith(p));
 }
 
 const DEFAULT_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";

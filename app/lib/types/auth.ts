@@ -3,6 +3,7 @@ export type LoginRequest = {
   password: string;
 };
 
+
 export type SignupRequest = {
   email: string;
   password: string;
@@ -24,6 +25,18 @@ export type InviteRequest = {
 export type ForgotPasswordRequest = {
   email: string;
 };
+
+export type ResetPasswordRequest = {
+  email: string;
+  otp: string
+  password: string
+}
+
+export type VerifyOTPRequest = {
+  email: string;
+  otp: string
+}
+
 
 type UserData = {
   id: string

@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
 import { useUser } from "../../context/UserContext";
+import { useGetUserProfileQuery } from "../../hooks/home/homeQuery";
 import {
   HomeIcon,
   CompeteIcon,
@@ -50,7 +52,15 @@ function GoldLogo() {
 
 export default function SideBar() {
   const pathname = usePathname();
-  const user = useUser();
+  const { user, setUser } = useUser();
+  const { data } = useGetUserProfileQuery();
+
+
+  useEffect(() => {
+    if (data?.data) {
+      setUser(data.data);
+    }
+  }, [data, setUser]);
 
   return (
     <aside className="hidden w-[372px] shrink-0 flex-col border-r border-gold bg-ink-900 px-[34px] pb-[34px] pt-[40px] lg:flex h-screen overflow-y-auto scrollbar-hide">
@@ -98,10 +108,10 @@ export default function SideBar() {
           />
           <div className="flex flex-col gap-[3px]">
             <span className="font-display text-[14px] font-semibold leading-[17px] text-white">
-              emgee
+              {user?.user.username}
             </span>
             <span className="font-display text-[10px] font-semibold leading-3 text-stone">
-              {user.email}
+              {user?.user.email}
             </span>
           </div>
         </div>

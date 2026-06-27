@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useSetPageHeader } from "../../context/PageHeaderContext";
+import { useGetLeaderboardQuery } from "@/app/hooks/leaderboard/leaderboardQuery";
+import { Leaderboard, ListLeaderboardParams } from "@/app/lib/types/leaderboard";
+import { useUser } from "@/app/context/UserContext";
+import Loader from "@/components/Loader";
+import { useDebounce } from "@/app/utils/helpers";
+import { SearchIcon } from "../campus/page";
 
 /* ------------------------------------------------------------------ */
 /*  Shared bits                                                       */
@@ -25,9 +31,9 @@ function Avatar({ cell, className = "", ring }: { cell: number; className?: stri
   );
 }
 
-const Bronze = () => (
+const Tag = ({ tier }: { tier: string }) => (
   <span className="rounded-full border border-gold/45 bg-[#f39736] px-[7px] py-[3px] font-display text-[11px] font-semibold leading-none text-white">
-    Bronze
+    {tier}
   </span>
 );
 
@@ -70,11 +76,10 @@ function Tabs({ active, onChange }: { active: Tab; onChange: (t: Tab) => void })
           <button
             key={t}
             onClick={() => onChange(t)}
-            className={`rounded-full px-3 py-2 font-display text-[16px] font-medium leading-none transition-colors ${
-              on
+            className={`rounded-full px-3 py-2 font-display text-[16px] font-medium leading-none transition-colors ${on
                 ? "border border-gold-deep/[0.53] bg-gold text-[#615e53]"
                 : "bg-gold/[0.13] text-ink/70 hover:bg-gold/20"
-            }`}
+              }`}
           >
             {t}
           </button>
@@ -164,7 +169,7 @@ function PodiumBlock({ tier }: { tier: PodiumTier }) {
 /* ------------------------------------------------------------------ */
 /*  Top Players list                                                  */
 /* ------------------------------------------------------------------ */
-function TopPlayers({ players }: { players: Player[] }) {
+function TopPlayers({ players }: { players: Leaderboard[] }) {
   return (
     <div className="flex flex-1 flex-col gap-[21px]">
       <span className="flex items-center gap-1.5 font-display text-[16px] font-semibold text-black/80">
@@ -173,46 +178,50 @@ function TopPlayers({ players }: { players: Player[] }) {
       </span>
       <div className="flex flex-col gap-2">
         {players.map((p, i) => (
-          <LeaderRow key={p.name} index={i} p={p} />
+          <LeaderRow key={p.id} index={i} p={p} />
         ))}
       </div>
     </div>
   );
 }
 
-function LeaderRow({ index, p }: { index: number; p: Player }) {
+function LeaderRow({ index, p }: { index: number; p: Leaderboard }) {
+  const { user } = useUser();
   return (
     <div
-      className={`flex items-center justify-between rounded-[20px] px-3 py-3.5 ${
-        p.you ? "border border-gold/[0.68] bg-[#feefc3]" : "bg-[#f5f4f1]"
-      }`}
+      className={`flex items-center justify-between rounded-[20px] px-3 py-3.5 ${user?.user?.id === p.id ? "border border-gold/[0.68] bg-[#feefc3]" : "bg-[#f5f4f1]"
+        }`}
     >
       <div className="flex items-center gap-2">
         <span className="flex w-6 justify-center text-[18px] leading-none">
           {index < 3 ? MEDALS[index] : <span className="font-display text-[14px] font-semibold text-black/60">{index + 1}</span>}
         </span>
-        <Avatar cell={p.cell} className="h-[37px] w-[37px]" />
+        {/* <img src={p.avatar_url} /> */}
+        <Avatar cell={0} className="h-[37px] w-[37px]" />
         <div className="flex items-center gap-2">
-          <span className="font-display text-[14px] font-semibold text-black/80">{p.name}</span>
-          <Bronze />
-          {p.uni && <span className="font-display text-[14px] text-black/60">{p.uni}</span>}
+          <span className="font-display text-[14px] font-semibold text-black/80">{p.username}</span>
+          <Tag tier={p.division} />
+          {/* {p.uni && <span className="font-display text-[14px] text-black/60">{p.uni}</span>} */}
         </div>
       </div>
       <span className="font-display text-[14px] font-semibold text-black/80">
-        {p.pts} <span className="text-black/40">pts</span>
+        {p.total_points} <span className="text-black/40">pts</span>
       </span>
     </div>
   );
 }
 
 /* flat list (Weekly / Daily / Campus) */
-function FlatList({ players }: { players: Player[] }) {
+function FlatList({ players }: { players: Leaderboard[] }) {
   return (
+    <>
+   
     <div className="flex flex-col gap-2">
       {players.map((p, i) => (
-        <LeaderRow key={p.name + i} index={i} p={p} />
+        <LeaderRow key={p.id} index={i} p={p} />
       ))}
     </div>
+    </>
   );
 }
 
@@ -230,25 +239,51 @@ function TrendUpIcon(p: React.SVGProps<SVGSVGElement>) {
 export default function LeaderboardPage() {
   useSetPageHeader({ title: "Leaderboard", subtitle: "See who's topping the charts" });
   const [tab, setTab] = useState<Tab>("National");
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search);
+  const params: ListLeaderboardParams =
+    tab === "National"
+      ? {}
+      : tab === "Campus"
+      ? { period: "campus", university: debouncedSearch }
+      : { period: tab.toLowerCase() as ListLeaderboardParams["period"] };
+
+  const { data, isLoading, isFetching } = useGetLeaderboardQuery(params);
+
 
   // deep-link a tab for previewing/sharing, e.g. ?tab=Campus
-  useEffect(() => {
-    const q = new URLSearchParams(window.location.search).get("tab");
-    if (q && (TABS as readonly string[]).includes(q)) setTab(q as Tab);
-  }, []);
+  // useEffect(() => {
+  //   const q = new URLSearchParams(window.location.search).get("tab");
+  //   if (q && (TABS as readonly string[]).includes(q)) setTab(q as Tab);
+  // }, []);
+
+  const hasPlayers = (data?.leaderboard?.length ?? 0) > 0;
+  const leaderboard = data?.leaderboard ?? []
 
   return (
     <div className="mx-auto flex w-full flex-col gap-7">
       <Tabs active={tab} onChange={setTab} />
-
-      {tab === "National" ? (
-        <div className="flex flex-col gap-7 lg:flex-row">
-          <Podium players={national} />
-          <TopPlayers players={national} />
-        </div>
-      ) : (
-        <FlatList players={tab === "Weekly" ? weekly : tab === "Daily" ? daily : campus} />
-      )}
+      {isLoading || isFetching ? <Loader /> : hasPlayers ? <>
+        {tab === "National" ? (
+          <div className="flex flex-col gap-7 lg:flex-row">
+            <Podium players={national} />
+            <TopPlayers players={leaderboard} />
+          </div>
+        ) : tab === "Campus" ? (
+           <>
+           <div className="flex items-center gap-3 rounded-full bg-[#f5f4f1] px-5 py-3">
+        <SearchIcon className="h-6 w-6 shrink-0 text-[#e9ad01]" />
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search for your university..."
+          className="min-w-0 flex-1 bg-transparent font-display text-[16px] font-normal text-black outline-none placeholder:text-black/40"
+        />
+      </div>
+          <FlatList players={leaderboard} />
+          </>
+        ) : <FlatList players={leaderboard} /> }
+      </> : <div>No players yet</div>}
     </div>
   );
 }

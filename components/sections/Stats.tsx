@@ -33,11 +33,11 @@ export function Stats() {
     <section className="mx-auto w-full max-w-shell bg-cream">
       <div className="flex items-start gap-[52px] px-[56px] pb-[67px] pt-[114px]">
         {/* left: heading + subtext (7px lower than stats grid to match original top offsets) */}
-        <div className="flex w-[578px] shrink-0 flex-col gap-[39px] pt-[7px]">
+        <div className="flex w-[50%] shrink-0 flex-col gap-[39px] pt-[7px]">
           <h2 className="text-gradient-dark font-display text-[62px] font-semibold leading-[56px]">
-            Every second counts, every match pays.
+            Every second <br />counts, every <br/> match pays.
           </h2>
-          <p className="max-w-[514px] font-display text-[24px] font-medium leading-[33px] text-ink/60">
+          <p className="w-[80%] font-display text-[24px] font-medium leading-[33px] text-ink/60">
             Built for challengers who love quick wins, instant payouts, and the
             thrill of live quiz battles — every second is a chance to prove your
             edge.
@@ -45,7 +45,7 @@ export function Stats() {
         </div>
 
         {/* right: stat grid + avatar caption */}
-        <div className="flex flex-1 flex-col">
+        <div className="flex w-[50%] flex-col">
           {/* top row — 3 equal boxes */}
           <div className="flex gap-[17px]">
             <StatBox value="50+" label="Quiz Question" className="flex-1" />
