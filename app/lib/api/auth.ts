@@ -23,6 +23,10 @@ export function forgotPassword(payload: ForgotPasswordRequest) {
   return api.post<any>("/auth/forgot-password", payload);
 }
 
+export function resendOTP(payload: ForgotPasswordRequest) {
+  return api.post<any>("/auth/resend-verification", payload);
+}
+
 export function verifyOTP(payload: VerifyOTPRequest) {
   return api.post<any>("/auth/verify-otp", payload);
 }

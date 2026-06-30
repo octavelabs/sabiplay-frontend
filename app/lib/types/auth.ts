@@ -9,12 +9,12 @@ export type SignupRequest = {
   password: string;
   username: string;
   full_name: string;
-  dob?: string;
+  date_of_birth: string;
   is_student: boolean;
   university: string;
   department: string;
   state: string;
-  avatar?: number;
+  avatar_url: string;
 };
 
 export type InviteRequest = {

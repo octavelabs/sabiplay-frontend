@@ -26,7 +26,7 @@ import { useSignupMutation } from "../hooks/auth/authMutation";
 
 const TOTAL = 5;
 
-type FormValues = SignupRequest & { dob: string; avatar: number };
+type FormValues = SignupRequest ;
 
 export default function SignupPage() {
   const router = useRouter();
@@ -40,17 +40,20 @@ export default function SignupPage() {
       email: "",
       password: "",
       username: "",
-      dob: "",
+      date_of_birth: "",
       state: "",
-      avatar: 0,
+      avatar_url: "",
       is_student: false,
       university: "",
       department: "",
     },
     validationSchema: signupSchema,
     validateOnMount: true,
-    onSubmit: ({ dob: _dob, avatar: _avatar, ...payload }) => {
-      signup(payload, { onSuccess: () => router.push("/dashboard/home") });
+    onSubmit: (payload) => {
+      const cleanedPayload = Object.fromEntries(
+        Object.entries({ ...payload, avatar_url: "avatar-3" }).filter(([, v]) => v !== "")
+      ) as typeof payload;
+      signup(cleanedPayload, { onSuccess: () => router.push("/dashboard/home") });
 
     },
   });
@@ -72,7 +75,7 @@ export default function SignupPage() {
       case 1:
         return !!v.full_name.trim() && !!v.email.trim() && !!v.password.trim();
       case 2:
-        return !!v.username.trim() && !!v.dob;
+        return !!v.username.trim() && !!v.date_of_birth;
       case 3:
         return !!v.state;
       case 4:
@@ -151,9 +154,9 @@ export default function SignupPage() {
                     type="date"
                     placeholder="mm/dd/yyyy"
                     icon={<CalendarIcon className="h-[26px] w-[26px]" />}
-                    value={formik.values.dob}
-                    onChange={(e) => formik.setFieldValue("dob", e.target.value)}
-                    onBlur={() => formik.setFieldTouched("dob", true)}
+                    value={formik.values.date_of_birth}
+                    onChange={(e) => formik.setFieldValue("date_of_birth", e.target.value)}
+                    onBlur={() => formik.setFieldTouched("date_of_birth", true)}
                   />
                 </>
               )}
@@ -169,8 +172,8 @@ export default function SignupPage() {
               {/* ---- Step 4: avatar ---- */}
               {step === 4 && (
                 <AvatarPicker
-                  value={Number(formik.values.avatar)}
-                  onChange={(i) => formik.setFieldValue("avatar", String(i))}
+                  value={Number(formik.values.avatar_url)}
+                  onChange={(i) => formik.setFieldValue("avatar_url", String(i))}
                 />
               )}
 

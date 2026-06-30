@@ -1,5 +1,5 @@
 import { Toast } from "@/app/components/Alert/toast";
-import { forgotPassword, login, signup, verifyOTP } from "@/app/lib/api/auth";
+import { forgotPassword, login, resendOTP, resetPassword, signup, verifyOTP } from "@/app/lib/api/auth";
 import { ApiError } from "@/app/lib/api/errors";
 import { ForgotPasswordRequest, LoginRequest, LoginResponse, ResetPasswordRequest, SignupRequest, SignupResponse, VerifyOTPRequest } from "@/app/lib/types/auth";
 import { useMutation } from "@tanstack/react-query";
@@ -39,14 +39,23 @@ export function useForgotPasswordMutation() {
 
 export function useResetPasswordMutation() {
   return useMutation<SignupResponse, Error, ResetPasswordRequest>({
-    mutationFn: (payload) => forgotPassword(payload),
+    mutationFn: (payload) => resetPassword(payload),
     onError: (error: unknown) => {
       Toast("error", getErrorMessage(error, "Request Failed"));
     },
   });
 }
 
-export function useVerifiyOTPMutation() {
+export function useResendOTPMutation() {
+  return useMutation<SignupResponse, Error, ForgotPasswordRequest>({
+    mutationFn: (payload) => resendOTP(payload),
+    onError: (error: unknown) => {
+      Toast("error", getErrorMessage(error, "Request Failed"));
+    },
+  });
+}
+
+export function useVerifyOTPMutation() {
   return useMutation<SignupResponse, Error, VerifyOTPRequest>({
     mutationFn: (payload) => verifyOTP(payload),
     onError: (error: unknown) => {

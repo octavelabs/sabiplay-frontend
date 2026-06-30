@@ -20,10 +20,13 @@ import {
   TrophyOffIcon,
   TrendDownIcon,
   TrophyIcon,
+  MoneyIcon,
 } from "./icons";
-import { useGetWalletDetailsQuery, useGetWalletTransactionsQuery } from "@/app/hooks/wallet/walletQuery";
+import { useGetBankListQuery, useGetWalletDetailsQuery, useGetWalletTransactionsQuery } from "@/app/hooks/wallet/walletQuery";
 import Loader from "@/components/Loader";
-// import { useFundWalletMutation } from "@/app/hooks/wallet/walletMutation";
+import { useCreateBankMutation, useFundWalletMutation } from "@/app/hooks/wallet/walletMutation";
+import { ArrowDownLeft } from "lucide-react";
+import { formatCurrency } from "@/app/utils/helpers";
 
 type ModalKind = "fund" | "withdraw" | "addBank" | "pin" | "success" | null;
 
@@ -63,15 +66,7 @@ function StatCard({
   );
 }
 
-/* ------------------------------------------------------------------ */
-/*  Transaction history                                               */
-/* ------------------------------------------------------------------ */
-const transactions = [
-  { kind: "out", title: "Entry fee — Nigeria Premier L...", time: "1d ago", amount: "-₦5,000", color: "text-[#ecbc32]" },
-  { kind: "out", title: "Entry fee — Beat the Time Cha...", time: "17d ago", amount: "-₦1,000", color: "text-[#ecbc32]" },
-  { kind: "in", title: "Wallet funded via Paystack", time: "17d ago", amount: "+₦10,000", color: "text-win" },
-  { kind: "in", title: "Wallet funded via Paystack", time: "17d ago", amount: "+₦10,000", color: "text-win" },
-];
+
 
 function TransactionHistory() {
   const {data, isLoading} = useGetWalletTransactionsQuery()
@@ -87,29 +82,29 @@ function TransactionHistory() {
         <span className="font-display text-[12px] font-medium text-black/40">{new Date().toDateString()}</span>
         {isLoading ? <Loader /> : walletTransactions.length > 0 ? 
         <div className="flex flex-col rounded-[20px] bg-[#f5f4f1] px-[23px] py-[31px]">
-          {transactions.map((t, i) => (
+          {walletTransactions.map((t, i) => (
             <div key={i}>
               {i > 0 && <div className="my-[19px] h-px w-full bg-stone/10" />}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <span
                     className={`flex h-[29px] w-[29px] items-center justify-center rounded-full ${
-                      t.kind === "in" ? "bg-[#e1efe2]" : "bg-gold/20"
+                      t.type === "credit" ? "bg-[#e1efe2]" : "bg-gold/20"
                     }`}
                   >
-                    {t.kind === "in" ? (
-                      <ArrowUpIcon className="h-3 w-3 text-win" />
+                    {t.type === "credit" ? (
+                      <ArrowDownLeft className="h-[14px] w-[14px]" stroke='#0E9F37' />
                     ) : (
-                      <VoucherIcon className="h-3.5 w-3.5 text-[#e9ad01]" />
+                      <MoneyIcon  />
                     )}
                   </span>
                   <div className="flex flex-col gap-0.5">
-                    <span className="font-display text-[14px] font-semibold text-black/80">{t.title}</span>
-                    <span className="font-display text-[12px] font-normal text-black/40">{t.time}</span>
+                    <span className="font-display text-[14px] font-semibold text-black/80">{t.description}</span>
+                    <span className="font-display text-[12px] font-normal text-black/40">{new Date(t.created_at).toDateString()}</span>
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-2.5">
-                  <span className={`font-display text-[14px] font-bold ${t.color}`}>{t.amount}</span>
+                  <span className={`font-display text-[14px] font-bold ${t.type === 'credit' ? 'text-win' : 'text-[#ecbc32]'}`}>{`${t.type === 'credit' ? "+" : "-"}₦${formatCurrency(t.amount/100)}`}</span>
                   <span className="rounded-full bg-win/10 px-2 py-0.5 font-display text-[10px] font-medium text-win">
                     Success
                   </span>
@@ -178,8 +173,17 @@ function ModalHeader({
 function FundModal({ onClose }: { onClose: () => void }) {
   const [amount, setAmount] = useState("");
   const chips = ["₦1,000", "₦2,000", "₦5,000", "₦10,000"];
+  const { mutate, isPending } = useFundWalletMutation();
 
-  // const {mutate, isPending} = useFundWalletMutation()
+  function handleFund() {
+    const parsed = Number(amount.replace(/[₦,]/g, ""));
+    if (!parsed) return;
+    mutate(
+      { amount: parsed, callback_url: `${window.location.origin}/dashboard/wallet/callback` },
+      { onSuccess: (data) => { window.location.href = data.authorization_url; } },
+    );
+  }
+
   return (
     <Modal onClose={onClose}>
       <div className="flex flex-col gap-[18px] px-[39px] py-[33px]">
@@ -205,7 +209,9 @@ function FundModal({ onClose }: { onClose: () => void }) {
                 </button>
               ))}
             </div>
-            <Button variant="gold" className="w-full" onClick={onClose}>
+            <Button
+              loading={isPending}
+              variant="gold" className="w-full" onClick={handleFund}>
               <PlusIcon className="h-5 w-5" />
               Fund
             </Button>
@@ -252,10 +258,20 @@ function WithdrawModal({ onAddBank, onClose }: { onAddBank: () => void; onClose:
 }
 
 /* ------- Add Bank ------- */
-const BANKS = ["Access Bank", "GTBank", "Kuda", "Opay", "Zenith Bank", "UBA", "First Bank"];
 
-function AddBankModal({ onSave, onCancel }: { onSave: () => void; onCancel: () => void }) {
-  const [acct, setAcct] = useState("");
+function AddBankModal({ onCancel, onClose }: { onCancel: () => void; onClose: ()  => void}) {
+  const [acctNumber, setAcctNumber] = useState("");
+    const [acctName, setAcctName] = useState("");
+
+  const [bank, setBank] = useState({
+    name: "",
+    code: ""
+  });
+  const { data } = useGetBankListQuery({ country: 'nigeria' });
+  const banks = data?.banks ?? [];
+  const { mutate: createBank, isPending } = useCreateBankMutation();
+
+
   return (
     <Modal onClose={onCancel}>
       <div className="flex flex-col gap-[22px] px-[39px] py-10">
@@ -266,30 +282,48 @@ function AddBankModal({ onSave, onCancel }: { onSave: () => void; onCancel: () =
               <label className="font-display text-[16px] font-medium text-black">Account Number</label>
               <div className="flex h-[52px] items-center rounded-full border border-black/10 bg-[#f5f4f1] px-5">
                 <input
-                  value={acct}
-                  onChange={(e) => setAcct(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                  value={acctNumber}
+                  onChange={(e) => setAcctNumber(e.target.value.replace(/\D/g, "").slice(0, 10))}
                   placeholder="0123456789"
                   inputMode="numeric"
                   className="w-full bg-transparent font-display text-[18px] text-ink outline-none placeholder:text-ink/30"
                 />
               </div>
             </div>
-            <span className="font-display text-[14px] font-semibold text-ink/30">{acct.length}/10 digits</span>
+            <span className="font-display text-[14px] font-semibold text-ink/30">{acctNumber.length}/10 digits</span>
           </div>
+           <div className="flex flex-col gap-[5px]">
+            <div className="flex flex-col gap-2">
+              <label className="font-display text-[16px] font-medium text-black">Account Name</label>
+              <div className="flex h-[52px] items-center rounded-full border border-black/10 bg-[#f5f4f1] px-5">
+                <input
+                  value={acctName}
+                  onChange={(e) => setAcctName(e.target.value)}
+                  placeholder="e.g george obi"
+                  inputMode="text"
+                  className="w-full bg-transparent font-display text-[18px] text-ink outline-none placeholder:text-ink/30"
+                />
+              </div>
+            </div>
+        </div>
           <div className="flex flex-col gap-2">
             <label className="font-display text-[16px] font-medium text-black">Bank Name</label>
             <div className="relative">
               <select
-                defaultValue=""
+                value={bank.code}
+                onChange={(e) => {
+                  const selected = banks.find((b) => b.code === e.target.value);
+                  if (selected) setBank({ name: selected.name, code: selected.code });
+                }}
                 className="h-[52px] w-full appearance-none rounded-full border border-black/10 bg-[#f5f4f1] px-5 font-display text-[18px] text-ink outline-none [&:invalid]:text-ink/50"
                 required
               >
                 <option value="" disabled>
                   Select your bank
                 </option>
-                {BANKS.map((b) => (
-                  <option key={b} value={b}>
-                    {b}
+                {banks.map((b) => (
+                  <option key={b.code} value={b.code}>
+                    {b.name}
                   </option>
                 ))}
               </select>
@@ -306,8 +340,23 @@ function AddBankModal({ onSave, onCancel }: { onSave: () => void; onCancel: () =
           >
             Cancel
           </button>
-          <Button variant="gold" className="flex-1" onClick={onSave}>
-            Save bank account
+          <Button
+            variant="gold"
+            className="flex-1"
+            disabled={isPending}
+            onClick={() =>
+              createBank(
+                {
+                  bank_name: bank.name,
+                  bank_code: bank.code,
+                  account_number: acctNumber,
+                  account_name: acctName,
+                },
+                { onSuccess: onClose },
+              )
+            }
+          >
+            {isPending ? "Saving…" : "Save bank account"}
           </Button>
         </div>
       </div>
@@ -461,11 +510,11 @@ export default function WalletPage() {
         <WithdrawModal onAddBank={() => setModal("addBank")} onClose={() => setModal(null)} />
       )}
       {modal === "addBank" && (
-        <AddBankModal onSave={() => setModal("pin")} onCancel={() => setModal(null)} />
+        <AddBankModal onClose={() => setModal("withdraw")}  onCancel={() => setModal(null)} />
       )}
-      {modal === "pin" && (
+      {/* {modal === "pin" && (
         <PinModal onWithdraw={() => setModal("success")} onCancel={() => setModal(null)} />
-      )}
+      )} */}
       {modal === "success" && (
         <SuccessModal onAgain={() => setModal("withdraw")} onClose={() => setModal(null)} />
       )}

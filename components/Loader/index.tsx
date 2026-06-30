@@ -1,5 +1,5 @@
 export default function Loader() {
-    return (<div className="w-[40px] h-[40px]">
+    return (<div className="w-[30px] h-[30px]">
         <svg
             aria-hidden="true"
             className="h-full w-full animate-spin fill-[#6B5DD3] text-gray-200"

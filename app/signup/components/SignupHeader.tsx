@@ -2,8 +2,8 @@ import { StepBadge } from "@/components/auth/StepBadge";
 
 export function SignupHeader({ step }: { step: number }) {
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-2 w-full">
+      <div className="flex items-center justify-between w-[80%]">
         <span className="font-display text-[18px] font-medium leading-6 text-ink/60">
           Get started with SabiPlay
         </span>
